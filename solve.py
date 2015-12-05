@@ -16,6 +16,8 @@ parser.add_argument("--input", type=str)
 
 solutions = [
     lambda i: None,
+    lambda i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i)]),
+               ),
 ]
 
 if __name__ == "__main__":
