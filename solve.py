@@ -3,6 +3,7 @@
 
 import sys
 import argparse
+import collections
 
 from tasks import tasks
 from inputs import inputs
@@ -14,6 +15,15 @@ parser.add_argument("day", type=int)
 parser.add_argument("--input", type=str)
 
 
+def walk(route, x_step={"^": 0, "v": 0, "<": -1, ">": 1}, y_step={"^": -1, "v": 1, "<": 0, ">": 0}):
+    x, y = 0, 0
+    history = [(x, y)]
+    for step in route:
+        x += x_step[step]
+        y += y_step[step]
+        history += [(x, y)]
+    return history
+
 solutions = [
     lambda i: None,
     lambda i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i)]),
@@ -21,6 +31,8 @@ solutions = [
                ),
     lambda i: (sum(map(lambda (l, w, h): ((2 * l * w) + (2 * w * h) + (2 * h * l)) + min(l * w, w * h, h * l), map(lambda l: map(int, l.split("x")), i.splitlines()))),
                sum(map(lambda (l, w, h): min(((2 * l) + (2 * w)), ((2 * l) + (2 * h)), ((2 * h) + (2 * w))) + (l * w * h), map(lambda l: map(int, l.split("x")), i.splitlines()))),
+               ),
+    lambda i: (len(collections.Counter(walk(i))),
                ),
 ]
 

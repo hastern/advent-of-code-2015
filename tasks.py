@@ -60,4 +60,18 @@ A present with dimensions 2x3x4 requires 2+2+3+3 = 10 feet of ribbon to wrap the
 A present with dimensions 1x1x10 requires 1+1+1+1 = 4 feet of ribbon to wrap the present plus 1*1*10 = 10 feet of ribbon for the bow, for a total of 14 feet.
 How many total feet of ribbon should they order?
 """,
+    """--- Day 3: Perfectly Spherical Houses in a Vacuum ---
+
+Santa is delivering presents to an infinite two-dimensional grid of houses.
+
+He begins by delivering a present to the house at his starting location, and then an elf at the North Pole calls him via radio and tells him where to move next. Moves are always exactly one house to the north (^), south (v), east (>), or west (<). After each move, he delivers another present to the house at his new location.
+
+However, the elf back at the north pole has had a little too much eggnog, and so his directions are a little off, and Santa ends up visiting some houses more than once. How many houses receive at least one present?
+
+For example:
+
+> delivers presents to 2 houses: one at the starting location, and one to the east.
+^>v< delivers presents to 4 houses in a square, including twice to the house at his starting/ending location.
+^v^v^v^v^v delivers a bunch of presents to some very lucky children at only 2 houses.
+""",
 ]
