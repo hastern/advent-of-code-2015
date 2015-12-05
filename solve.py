@@ -4,6 +4,7 @@
 import sys
 import argparse
 import collections
+import hashlib
 
 from tasks import tasks
 from inputs import inputs
@@ -24,6 +25,19 @@ def walk(route, x_step={"^": 0, "v": 0, "<": -1, ">": 1}, y_step={"^": -1, "v": 
         history += [(x, y)]
     return history
 
+
+def mine(key):
+    digest = ""
+    round = 0
+    while not digest.startswith("00000"):
+        round += 1
+        m = hashlib.md5()
+        secret = key + str(round)
+        m.update(secret)
+        digest = m.hexdigest()
+        print digest, secret, "\r",
+    return round, digest
+
 solutions = [
     lambda i: None,
     lambda i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i)]),
@@ -34,6 +48,8 @@ solutions = [
                ),
     lambda i: (len(collections.Counter(walk(i))),
                len(collections.Counter(walk(i[::2]) + walk(i[1::2])))
+               ),
+    lambda i: (mine(input),
                ),
 ]
 
