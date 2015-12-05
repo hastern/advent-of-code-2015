@@ -33,6 +33,7 @@ solutions = [
                sum(map(lambda (l, w, h): min(((2 * l) + (2 * w)), ((2 * l) + (2 * h)), ((2 * h) + (2 * w))) + (l * w * h), map(lambda l: map(int, l.split("x")), i.splitlines()))),
                ),
     lambda i: (len(collections.Counter(walk(i))),
+               len(collections.Counter(walk(i[::2]) + walk(i[1::2])))
                ),
 ]
 
