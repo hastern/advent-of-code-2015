@@ -4,7 +4,7 @@
 import sys
 import argparse
 import collections
-import hashlib
+import Crypto.Hash.MD5 as MD5
 
 from tasks import tasks
 from inputs import inputs
@@ -26,16 +26,16 @@ def walk(route, x_step={"^": 0, "v": 0, "<": -1, ">": 1}, y_step={"^": -1, "v": 
     return history
 
 
-def mine(key):
+def mine(key, zeros=5):
     digest = ""
     round = 0
-    while not digest.startswith("00000"):
+    zeros = "0" * zeros
+    while not digest.startswith(zeros):
         round += 1
-        m = hashlib.md5()
         secret = key + str(round)
-        m.update(secret)
-        digest = m.hexdigest()
-        print digest, secret, "\r",
+        digest = MD5.new(secret).hexdigest()
+        if round % 1000 == 0:
+            print digest, secret, "\r",
     return round, digest
 
 solutions = [
@@ -50,6 +50,7 @@ solutions = [
                len(collections.Counter(walk(i[::2]) + walk(i[1::2])))
                ),
     lambda i: (mine(input),
+               mine(input, zeros=6)
                ),
 ]
 
