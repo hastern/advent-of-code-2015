@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
+import re
 import sys
 import argparse
 import collections
@@ -38,6 +39,7 @@ def mine(key, zeros=5):
             print digest, secret, "\r",
     return round, digest
 
+
 solutions = [
     lambda i: None,
     lambda i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i)]),
@@ -51,6 +53,8 @@ solutions = [
                ),
     lambda i: (mine(input),
                mine(input, zeros=6)
+               ),
+    lambda i: (sum([(not any(map(lambda p: p in line, ["ab", "cd", "pq", "xy"]))) and (len(filter(lambda c: c in "aeiou", line)) >= 3) and (any(map(lambda p: p in line, [c * 2 for c in "abcdefghijklmnopqrstuvwxyz"]))) for line in map(str.strip, i.splitlines())]),
                ),
 ]
 
