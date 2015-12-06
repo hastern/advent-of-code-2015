@@ -6,6 +6,7 @@ import sys
 import argparse
 import collections
 import Crypto.Hash.MD5 as MD5
+import pyparsing as pp
 
 from tasks import tasks
 from inputs import inputs
@@ -40,6 +41,37 @@ def mine(key, zeros=5):
     return round, digest
 
 
+def parse_light_switches(instrs):
+    NUMBER = pp.Word(pp.nums)
+    CORNER = pp.Group(NUMBER + pp.Literal(",").suppress() + NUMBER)
+    RECT = CORNER + pp.Literal("through").suppress() + CORNER
+    SWITCH = pp.Literal("turn").suppress() + (pp.Literal("on") | pp.Literal("off"))
+    TOGGLE = pp.Literal("toggle")
+    INSTRUCTION = pp.Group((SWITCH | TOGGLE) + RECT)
+    INSTRUCTIONS = pp.OneOrMore(INSTRUCTION)
+    return map(lambda (i, t, b): (i, tuple(map(int, t)), tuple(map(int, b))), INSTRUCTIONS.parseString(instrs))
+
+build_lights = lambda size=1000, initial=False: {(x, y): initial for x in range(size) for y in range(size)}
+
+
+def rect(top, bottom):
+    for x in range(top[0], bottom[0] + 1):
+        for y in range(top[1], bottom[1] + 1):
+            yield x, y
+
+
+def access_lights(lights, instrs):
+    funcs = {
+        "toggle": lambda v: not v,
+        "on": lambda v: True,
+        "off": lambda v: False,
+    }
+    for i, t, b in instrs:
+        for coord in rect(t, b):
+            lights[coord] = funcs[i](lights[coord])
+    return lights
+
+
 solutions = [
     lambda i: None,
     lambda i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i)]),
@@ -56,6 +88,8 @@ solutions = [
                ),
     lambda i: (sum([(not any(map(lambda p: p in line, ["ab", "cd", "pq", "xy"]))) and (len(filter(lambda c: c in "aeiou", line)) >= 3) and (any(map(lambda p: p in line, [c * 2 for c in "abcdefghijklmnopqrstuvwxyz"]))) for line in map(str.strip, i.splitlines())]),
                sum([re.match("^.*(.).\\1.*$", line) is not None and re.match("^.*(..).*\\1.*$", line) is not None for line in map(str.strip, i.splitlines())]),
+               ),
+    lambda i: (collections.Counter(access_lights(build_lights(), parse_light_switches(i)).itervalues())[True],
                ),
 ]
 
