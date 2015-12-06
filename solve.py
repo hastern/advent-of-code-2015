@@ -60,15 +60,10 @@ def rect(top, bottom):
             yield x, y
 
 
-def access_lights(lights, instrs):
-    funcs = {
-        "toggle": lambda v: not v,
-        "on": lambda v: True,
-        "off": lambda v: False,
-    }
+def access_lights(lights, instrs, funcs={"toggle": lambda v: not v, "on": lambda v: True, "off": lambda v: False}, after=lambda v: v):
     for i, t, b in instrs:
         for coord in rect(t, b):
-            lights[coord] = funcs[i](lights[coord])
+            lights[coord] = after(funcs[i](lights[coord]))
     return lights
 
 
@@ -90,6 +85,7 @@ solutions = [
                sum([re.match("^.*(.).\\1.*$", line) is not None and re.match("^.*(..).*\\1.*$", line) is not None for line in map(str.strip, i.splitlines())]),
                ),
     lambda i: (collections.Counter(access_lights(build_lights(), parse_light_switches(i)).itervalues())[True],
+               sum(access_lights(build_lights(), parse_light_switches(i), funcs={"toggle": lambda v: v + 2, "on": lambda v: v + 1, "off": lambda v: v - 1}, after=lambda v: max(v, 0)).itervalues())
                ),
 ]
 
