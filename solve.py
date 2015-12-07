@@ -51,6 +51,7 @@ def parse_light_switches(instrs):
     INSTRUCTIONS = pp.OneOrMore(INSTRUCTION)
     return map(lambda (i, t, b): (i, tuple(map(int, t)), tuple(map(int, b))), INSTRUCTIONS.parseString(instrs))
 
+
 build_lights = lambda size=1000, initial=False: {(x, y): initial for x in range(size) for y in range(size)}
 
 
@@ -65,6 +66,19 @@ def access_lights(lights, instrs, funcs={"toggle": lambda v: not v, "on": lambda
         for coord in rect(t, b):
             lights[coord] = after(funcs[i](lights[coord]))
     return lights
+
+
+def parse_logic(input):
+    CONST = pp.Word(pp.nums).setParseAction(lambda s, l, t: [int(t[0])])
+    WIRE = pp.Word(pp.alphas)
+    UN_OP = pp.Literal("NOT")("op") + WIRE("a")
+    BIN_OP = WIRE("a") + (pp.Literal("AND") | pp.Literal("OR") | pp.Literal("XOR"))("op") + WIRE("b")
+    CONST_OP = WIRE("a") + (pp.Literal("RSHIFT") | pp.Literal("LSHIFT"))("op") + CONST("c")
+    ASSIGN_OP = (pp.Empty().addParseAction(lambda s, l, t: ["assign"]))("op") + CONST("c")
+    OP = pp.Group(UN_OP | BIN_OP | CONST_OP | ASSIGN_OP)("operation")
+    INSTR = pp.Group(OP + pp.Literal("->").suppress() + WIRE("dest"))
+    INSTRS = pp.OneOrMore(INSTR)
+    return INSTRS.parseString(input)
 
 
 solutions = [
