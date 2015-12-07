@@ -7,6 +7,7 @@ import argparse
 import collections
 import Crypto.Hash.MD5 as MD5
 import pyparsing as pp
+import operator
 
 from tasks import tasks
 from inputs import inputs
@@ -72,14 +73,96 @@ def parse_logic(input):
     CONST = pp.Word(pp.nums).setParseAction(lambda s, l, t: [int(t[0])])
     WIRE = pp.Word(pp.alphas)
     UN_OP = pp.Literal("NOT")("op") + WIRE("a")
-    BIN_OP = WIRE("a") + (pp.Literal("AND") | pp.Literal("OR") | pp.Literal("XOR"))("op") + WIRE("b")
+    BIN_OP = (WIRE("a") | CONST("c")) + (pp.Literal("AND") | pp.Literal("OR") | pp.Literal("XOR"))("op") + WIRE("b")
     CONST_OP = WIRE("a") + (pp.Literal("RSHIFT") | pp.Literal("LSHIFT"))("op") + CONST("c")
-    ASSIGN_OP = (pp.Empty().addParseAction(lambda s, l, t: ["assign"]))("op") + CONST("c")
+    ASSIGN_OP = (pp.Empty().addParseAction(lambda s, l, t: ["ASSIGN"]))("op") + (CONST("c") | WIRE("a"))
     OP = pp.Group(UN_OP | BIN_OP | CONST_OP | ASSIGN_OP)("operation")
     INSTR = pp.Group(OP + pp.Literal("->").suppress() + WIRE("dest"))
     INSTRS = pp.OneOrMore(INSTR)
     return INSTRS.parseString(input)
 
+
+class Gate(object):
+
+    def __init__(self, name, value=None, inputs=[], operation=None, add_operands=[]):
+        self.name = name
+        self.value = value
+        self.outputs = []
+        self.inputs = list(inputs)
+        self.operation = operation
+        self.add_operands = add_operands
+
+    def add_output(self, gate):
+        self.outputs.append(gate)
+        return self
+
+    @property
+    def resolved(self):
+        return self.value is not None
+
+    def resolve(self):
+        if self.resolved or self.operation is None:
+            return
+        operands = []
+        for input in self.inputs:
+            if not input.resolved:
+                return  # Missing Input: Can't resolve
+            operands.append(input.value)
+        self.value = self.operation(*(operands + list(self.add_operands))) & 0xFFFF
+        for output in self.outputs:
+            output.resolve()
+
+
+def build_gates(instr):
+    operations = {
+        "OR": operator.or_,
+        "AND": operator.and_,
+        "XOR": operator.xor,
+        "NOT": operator.inv,
+        "LSHIFT": operator.lshift,
+        "RSHIFT": operator.rshift,
+        "ASSIGN": lambda *v: v[0]
+    }
+    for instr in instr:
+        if instr.operation.op == "ASSIGN" and "c" in instr.operation:
+            yield Gate(instr.dest, instr.operation.c)
+        elif instr.operation.op == "ASSIGN":
+            yield Gate(instr.dest, inputs=(instr.operation.a, ), operation=operations[instr.operation.op])
+        elif instr.operation.op == "NOT":
+            yield Gate(instr.dest, inputs=(instr.operation.a, ), operation=operations[instr.operation.op])
+        elif instr.operation.op in ["OR", "AND", "XOR"]:
+            if "a" in instr.operation:
+                yield Gate(instr.dest,
+                           inputs=(instr.operation.a, instr.operation.b),
+                           operation=operations[instr.operation.op],
+                           )
+            elif "c" in instr.operation:
+                yield Gate(instr.dest,
+                           inputs=(instr.operation.b, ),
+                           operation=operations[instr.operation.op],
+                           add_operands=(instr.operation.c, ),
+                           )
+            else:
+                print "UNKNOWN", instr
+        elif instr.operation.op in ["LSHIFT", "RSHIFT"]:
+            yield Gate(instr.dest,
+                       inputs=(instr.operation.a, ),
+                       operation=operations[instr.operation.op],
+                       add_operands=(instr.operation.c, ),
+                       )
+
+
+def resolve_logic(instrs):
+    gates = {gate.name: gate for gate in build_gates(instrs)}
+    readyset = list()
+    # Wire gates up
+    for gate in gates.itervalues():
+        gate.inputs = [gates[g].add_output(gate) for g in gate.inputs]
+        if gate.resolved:
+            readyset.append(gate)
+    for gate in readyset:
+        map(Gate.resolve, gate.outputs)
+    return gates
 
 solutions = [
     lambda i: None,
@@ -100,6 +183,8 @@ solutions = [
                ),
     lambda i: (collections.Counter(access_lights(build_lights(), parse_light_switches(i)).itervalues())[True],
                sum(access_lights(build_lights(), parse_light_switches(i), funcs={"toggle": lambda v: v + 2, "on": lambda v: v + 1, "off": lambda v: v - 1}, after=lambda v: max(v, 0)).itervalues())
+               ),
+    lambda i: (resolve_logic(parse_logic(inputs[7]))['a'].value,
                ),
 ]
 
