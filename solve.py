@@ -152,14 +152,23 @@ def build_gates(instr):
                        )
 
 
-def resolve_logic(instrs):
-    gates = {gate.name: gate for gate in build_gates(instrs)}
-    readyset = list()
+init_gates = lambda instrs: {gate.name: gate for gate in build_gates(instrs)}
+
+
+def update_gate(gates, gate, value):
+    gates[gate].value = value
+    return gates
+
+
+def wire_gates(gates):
     # Wire gates up
     for gate in gates.itervalues():
         gate.inputs = [gates[g].add_output(gate) for g in gate.inputs]
-        if gate.resolved:
-            readyset.append(gate)
+    return gates
+
+
+def resolve_logic(gates):
+    readyset = [gate for gate in gates.values() if gate.resolved]
     for gate in readyset:
         map(Gate.resolve, gate.outputs)
     return gates
@@ -184,7 +193,8 @@ solutions = [
     lambda i: (collections.Counter(access_lights(build_lights(), parse_light_switches(i)).itervalues())[True],
                sum(access_lights(build_lights(), parse_light_switches(i), funcs={"toggle": lambda v: v + 2, "on": lambda v: v + 1, "off": lambda v: v - 1}, after=lambda v: max(v, 0)).itervalues())
                ),
-    lambda i: (resolve_logic(parse_logic(inputs[7]))['a'].value,
+    lambda i: (resolve_logic(wire_gates(init_gates(parse_logic(inputs[7]))))['a'].value,
+               resolve_logic(wire_gates(update_gate(init_gates(parse_logic(inputs[7])), "b", resolve_logic(wire_gates(init_gates(parse_logic(inputs[7]))))['a'].value)))['a'].value
                ),
 ]
 
