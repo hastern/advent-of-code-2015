@@ -173,6 +173,24 @@ def resolve_logic(gates):
         map(Gate.resolve, gate.outputs)
     return gates
 
+
+def unescape(s):
+    chs = []
+    p = 0
+    while p < len(s):
+        if s[p] == "\\":  # escape sequence
+            if s[p + 1] == "x":
+                chs.append(int(s[p + 2:p + 4], 16))
+                p += 3
+            else:
+                chs.append(ord(s[p + 1]))
+                p += 1
+        else:  # Standard character
+            chs.append(ord(s[p]))
+        p += 1
+    return chs
+
+
 solutions = [
     lambda i: None,
     lambda i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i)]),
@@ -195,6 +213,8 @@ solutions = [
                ),
     lambda i: (resolve_logic(wire_gates(init_gates(parse_logic(inputs[7]))))['a'].value,
                resolve_logic(wire_gates(update_gate(init_gates(parse_logic(inputs[7])), "b", resolve_logic(wire_gates(init_gates(parse_logic(inputs[7]))))['a'].value)))['a'].value
+               ),
+    lambda i: (sum(map(len, i.splitlines())) - sum(map(len, map(unescape, map(lambda s: s[1:-1], i.splitlines())))),
                ),
 ]
 
