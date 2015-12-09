@@ -210,35 +210,21 @@ def transform_to_gv(input, fname="graph.gv"):
         output.write("}\n")
 
 
-def build_net(input):
-    routes = collections.defaultdict(dict)
-    for line in input.splitlines():
-        parts = line.split()
-        routes[parts[0]][parts[2]] = int(parts[4])
-        routes[parts[2]][parts[0]] = int(parts[4])
-    return routes
-
-
-def all_routes(net):
-    for p in itertools.permutations(net.keys()):
-        yield p
-
-
-def route_length(net, route):
-    l = 0
-    src = route[0]
-    for dst in route[1:]:
-        l += net[src][dst]
-        src = dst
-    return l
-
-
-def find_route(net, pred=min, init=(sys.maxint, None)):
+def fold(_iterable, func=lambda e, a: e, init=None):
     result = init
-    for route in all_routes(net):
-        result = pred((route_length(net, route), route), result)
+    for elem in _iterable:
+        result = func(elem, result)
     return result
 
+
+generate_net = lambda input: {tuple(sorted(parts[:3:2])): int(parts[4]) for parts in map(str.split, input.splitlines())}
+route_length = lambda net, route: sum([net[tuple(sorted(route[c:c + 2]))] for c in range(len(route) - 1)])
+all_routes = lambda net: itertools.permutations(set(list(sum(net.keys(), ()))))
+shortest_route = lambda net: fold(all_routes(net), lambda e, a: min((route_length(net, e), e), a), (sys.maxint, None))
+longest_route = lambda net: fold(all_routes(net), lambda e, a: max((route_length(net, e), e), a), (0, None))
+
+shortest_route = lambda input: (lambda net: reduce(lambda a, e: min((sum([net[tuple(sorted(e[c:c + 2]))] for c in range(len(e) - 1)]), e), a), itertools.permutations(set(list(sum(net.keys(), ())))), (sys.maxint, None)))({tuple(sorted(parts[:3:2])): int(parts[4]) for parts in map(str.split, input.splitlines())})
+longest_route = lambda input: (lambda net: reduce(lambda a, e: max((sum([net[tuple(sorted(e[c:c + 2]))] for c in range(len(e) - 1)]), e), a), itertools.permutations(set(list(sum(net.keys(), ())))), (0, None)))({tuple(sorted(parts[:3:2])): int(parts[4]) for parts in map(str.split, input.splitlines())})
 
 solutions = [
     lambda i: None,
@@ -266,8 +252,8 @@ solutions = [
     lambda i: (sum(map(len, i.splitlines())) - sum(map(len, map(unescape, map(lambda s: s[1:-1], i.splitlines())))),
                sum(map(len, map(escape, i.splitlines()))) - sum(map(len, i.splitlines()))
                ),
-    lambda i: (find_route(build_net(inputs[9])),
-               find_route(build_net(inputs[9]), pred=max, init=(0, None)),
+    lambda i: (shortest_route(inputs[9]),
+               longest_route(inputs[9]),
                ),
 ]
 
