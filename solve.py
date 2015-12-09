@@ -246,14 +246,14 @@ solutions = [
     lambda i: (collections.Counter(access_lights(build_lights(), parse_light_switches(i)).itervalues())[True],
                sum(access_lights(build_lights(), parse_light_switches(i), funcs={"toggle": lambda v: v + 2, "on": lambda v: v + 1, "off": lambda v: v - 1}, after=lambda v: max(v, 0)).itervalues())
                ),
-    lambda i: (resolve_logic(wire_gates(init_gates(parse_logic(inputs[7]))))['a'].value,
-               resolve_logic(wire_gates(update_gate(init_gates(parse_logic(inputs[7])), "b", resolve_logic(wire_gates(init_gates(parse_logic(inputs[7]))))['a'].value)))['a'].value
+    lambda i: (resolve_logic(wire_gates(init_gates(parse_logic(i))))['a'].value,
+               resolve_logic(wire_gates(update_gate(init_gates(parse_logic(i)), "b", resolve_logic(wire_gates(init_gates(parse_logic(i))))['a'].value)))['a'].value
                ),
     lambda i: (sum(map(len, i.splitlines())) - sum(map(len, map(unescape, map(lambda s: s[1:-1], i.splitlines())))),
                sum(map(len, map(escape, i.splitlines()))) - sum(map(len, i.splitlines()))
                ),
-    lambda i: (shortest_route(inputs[9]),
-               longest_route(inputs[9]),
+    lambda i: (shortest_route(i),
+               longest_route(i),
                ),
 ]
 
