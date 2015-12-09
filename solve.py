@@ -192,13 +192,7 @@ def unescape(s):
     return chs
 
 
-def escape(s):
-    chs = []
-    for c in s:
-        if c in ['"', '\\']:
-            chs.append("\\")
-        chs.append(c)
-    return '"{}"'.format("".join(chs))
+escape = lambda s: '"{}"'.format("".join(["\\{}".format(c) if c in ['"', '\\'] else c for c in s]))
 
 
 def transform_to_gv(input, fname="graph.gv"):
