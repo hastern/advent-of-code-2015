@@ -191,6 +191,15 @@ def unescape(s):
     return chs
 
 
+def escape(s):
+    chs = []
+    for c in s:
+        if c in ['"', '\\']:
+            chs.append("\\")
+        chs.append(c)
+    return '"{}"'.format("".join(chs))
+
+
 solutions = [
     lambda i: None,
     lambda i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i)]),
@@ -215,6 +224,7 @@ solutions = [
                resolve_logic(wire_gates(update_gate(init_gates(parse_logic(inputs[7])), "b", resolve_logic(wire_gates(init_gates(parse_logic(inputs[7]))))['a'].value)))['a'].value
                ),
     lambda i: (sum(map(len, i.splitlines())) - sum(map(len, map(unescape, map(lambda s: s[1:-1], i.splitlines())))),
+               sum(map(len, map(escape, i.splitlines()))) - sum(map(len, i.splitlines()))
                ),
 ]
 
