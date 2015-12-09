@@ -8,6 +8,7 @@ import collections
 import Crypto.Hash.MD5 as MD5
 import pyparsing as pp
 import operator
+import itertools
 
 from tasks import tasks
 from inputs import inputs
@@ -200,6 +201,45 @@ def escape(s):
     return '"{}"'.format("".join(chs))
 
 
+def transform_to_gv(input, fname="graph.gv"):
+    with open(fname, "w") as output:
+        output.write("graph g {\n")
+        for line in input.splitlines():
+            parts = line.split()
+            output.write("  {} -- {} [label={}]".format(*parts[::2]))
+        output.write("}\n")
+
+
+def build_net(input):
+    routes = collections.defaultdict(dict)
+    for line in input.splitlines():
+        parts = line.split()
+        routes[parts[0]][parts[2]] = int(parts[4])
+        routes[parts[2]][parts[0]] = int(parts[4])
+    return routes
+
+
+def all_routes(net):
+    for p in itertools.permutations(net.keys()):
+        yield p
+
+
+def route_length(net, route):
+    l = 0
+    src = route[0]
+    for dst in route[1:]:
+        l += net[src][dst]
+        src = dst
+    return l
+
+
+def shortest_route(net):
+    shortest = (sys.maxint, None)
+    for route in all_routes(net):
+        shortest = min((route_length(net, route), route), shortest)
+    return shortest
+
+
 solutions = [
     lambda i: None,
     lambda i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i)]),
@@ -225,6 +265,8 @@ solutions = [
                ),
     lambda i: (sum(map(len, i.splitlines())) - sum(map(len, map(unescape, map(lambda s: s[1:-1], i.splitlines())))),
                sum(map(len, map(escape, i.splitlines()))) - sum(map(len, i.splitlines()))
+               ),
+    lambda i: (shortest_route(build_net(inputs[9])),
                ),
 ]
 
