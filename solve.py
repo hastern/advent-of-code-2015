@@ -233,11 +233,11 @@ def route_length(net, route):
     return l
 
 
-def shortest_route(net):
-    shortest = (sys.maxint, None)
+def find_route(net, pred=min, init=(sys.maxint, None)):
+    result = init
     for route in all_routes(net):
-        shortest = min((route_length(net, route), route), shortest)
-    return shortest
+        result = pred((route_length(net, route), route), result)
+    return result
 
 
 solutions = [
@@ -266,7 +266,8 @@ solutions = [
     lambda i: (sum(map(len, i.splitlines())) - sum(map(len, map(unescape, map(lambda s: s[1:-1], i.splitlines())))),
                sum(map(len, map(escape, i.splitlines()))) - sum(map(len, i.splitlines()))
                ),
-    lambda i: (shortest_route(build_net(inputs[9])),
+    lambda i: (find_route(build_net(inputs[9])),
+               find_route(build_net(inputs[9]), pred=max, init=(0, None)),
                ),
 ]
 
