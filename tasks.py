@@ -247,4 +247,26 @@ For example:
 "\x27" encodes to "\"\\x27\"", an increase from 6 characters to 11.
 Your task is to find the total number of characters to represent the newly encoded strings minus the number of characters of code in each original string literal. For example, for the strings above, the total encoded length (6 + 9 + 16 + 11 = 42) minus the characters in the original code representation (23, just like in the first part of this puzzle) is 42 - 23 = 19.
 """,
+    """--- Day 9: All in a Single Night ---
+
+Every year, Santa manages to deliver all of his presents in a single night.
+
+This year, however, he has some new locations to visit; his elves have provided him the distances between every pair of locations. He can start and end at any two (different) locations he wants, but he must visit each location exactly once. What is the shortest distance he can travel to achieve this?
+
+For example, given the following distances:
+
+London to Dublin = 464
+London to Belfast = 518
+Dublin to Belfast = 141
+The possible routes are therefore:
+
+Dublin -> London -> Belfast = 982
+London -> Dublin -> Belfast = 605
+London -> Belfast -> Dublin = 659
+Dublin -> Belfast -> London = 659
+Belfast -> Dublin -> London = 605
+Belfast -> London -> Dublin = 982
+The shortest of these is London -> Dublin -> Belfast = 605, and so the answer is 605 in this example.
+
+What is the distance of the shortest route?""",
 ]
