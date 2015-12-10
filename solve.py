@@ -17,7 +17,7 @@ sys.setrecursionlimit(10000)
 
 parser = argparse.ArgumentParser("Advent of Code Solutions")
 parser.add_argument("day", type=int)
-parser.add_argument("--input", type=str)
+parser.add_argument("--input", type=str, nargs="+")
 
 
 def walk(route, x_step={"^": 0, "v": 0, "<": -1, ">": 1}, y_step={"^": -1, "v": 1, "<": 0, ">": 0}):
@@ -221,41 +221,41 @@ shortest_route = lambda input: (lambda net: reduce(lambda a, e: min((sum([net[tu
 longest_route = lambda input: (lambda net: reduce(lambda a, e: max((sum([net[tuple(sorted(e[c:c + 2]))] for c in range(len(e) - 1)]), e), a), itertools.permutations(set(list(sum(net.keys(), ())))), (0, None)))({tuple(sorted(parts[:3:2])): int(parts[4]) for parts in map(str.split, input.splitlines())})
 
 solutions = [
-    lambda i: None,
-    lambda i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i)]),
-               (lambda m, i: m(m, i))((lambda m, r, f=0, s=0: s if f < 0 or len(r) == 0 else m(m, r[1:], f + ({"(": 1, ")": -1}[r[0]]), s + 1)), filter(lambda e: e in "()", i))
-               ),
-    lambda i: (sum(map(lambda (l, w, h): ((2 * l * w) + (2 * w * h) + (2 * h * l)) + min(l * w, w * h, h * l), map(lambda l: map(int, l.split("x")), i.splitlines()))),
-               sum(map(lambda (l, w, h): min(((2 * l) + (2 * w)), ((2 * l) + (2 * h)), ((2 * h) + (2 * w))) + (l * w * h), map(lambda l: map(int, l.split("x")), i.splitlines()))),
-               ),
-    lambda i: (len(collections.Counter(walk(i))),
-               len(collections.Counter(walk(i[::2]) + walk(i[1::2])))
-               ),
-    lambda i: (mine(input),
-               mine(input, zeros=6)
-               ),
-    lambda i: (sum([(not any(map(lambda p: p in line, ["ab", "cd", "pq", "xy"]))) and (len(filter(lambda c: c in "aeiou", line)) >= 3) and (any(map(lambda p: p in line, [c * 2 for c in "abcdefghijklmnopqrstuvwxyz"]))) for line in map(str.strip, i.splitlines())]),
-               sum([re.match("^.*(.).\\1.*$", line) is not None and re.match("^.*(..).*\\1.*$", line) is not None for line in map(str.strip, i.splitlines())]),
-               ),
-    lambda i: (collections.Counter(access_lights(build_lights(), parse_light_switches(i)).itervalues())[True],
-               sum(access_lights(build_lights(), parse_light_switches(i), funcs={"toggle": lambda v: v + 2, "on": lambda v: v + 1, "off": lambda v: v - 1}, after=lambda v: max(v, 0)).itervalues())
-               ),
-    lambda i: (resolve_logic(wire_gates(init_gates(parse_logic(i))))['a'].value,
-               resolve_logic(wire_gates(update_gate(init_gates(parse_logic(i)), "b", resolve_logic(wire_gates(init_gates(parse_logic(i))))['a'].value)))['a'].value
-               ),
-    lambda i: (sum(map(len, i.splitlines())) - sum(map(len, map(unescape, map(lambda s: s[1:-1], i.splitlines())))),
-               sum(map(len, map(escape, i.splitlines()))) - sum(map(len, i.splitlines()))
-               ),
-    lambda i: (shortest_route(i),
-               longest_route(i),
-               ),
+    lambda *i: None,
+    lambda *i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i[0])]),
+                (lambda m, i: m(m, i))((lambda m, r, f=0, s=0: s if f < 0 or len(r) == 0 else m(m, r[1:], f + ({"(": 1, ")": -1}[r[0]]), s + 1)), filter(lambda e: e in "()", i[0]))
+                ),
+    lambda *i: (sum(map(lambda (l, w, h): ((2 * l * w) + (2 * w * h) + (2 * h * l)) + min(l * w, w * h, h * l), map(lambda l: map(int, l.split("x")), i[0].splitlines()))),
+                sum(map(lambda (l, w, h): min(((2 * l) + (2 * w)), ((2 * l) + (2 * h)), ((2 * h) + (2 * w))) + (l * w * h), map(lambda l: map(int, l.split("x")), i[0].splitlines()))),
+                ),
+    lambda *i: (len(collections.Counter(walk(i[0]))),
+                len(collections.Counter(walk(i[0][::2]) + walk(i[0][1::2])))
+                ),
+    lambda *i: (mine(i[0]),
+                mine(i[0], zeros=6)
+                ),
+    lambda *i: (sum([(not any(map(lambda p: p in line, ["ab", "cd", "pq", "xy"]))) and (len(filter(lambda c: c in "aeiou", line)) >= 3) and (any(map(lambda p: p in line, [c * 2 for c in "abcdefghijklmnopqrstuvwxyz"]))) for line in map(str.strip, i[0].splitlines())]),
+                sum([re.match("^.*(.).\\1.*$", line) is not None and re.match("^.*(..).*\\1.*$", line) is not None for line in map(str.strip, i[0].splitlines())]),
+                ),
+    lambda *i: (collections.Counter(access_lights(build_lights(), parse_light_switches(i[0])).itervalues())[True],
+                sum(access_lights(build_lights(), parse_light_switches(i[0]), funcs={"toggle": lambda v: v + 2, "on": lambda v: v + 1, "off": lambda v: v - 1}, after=lambda v: max(v, 0)).itervalues())
+                ),
+    lambda *i: (resolve_logic(wire_gates(init_gates(parse_logic(i[0]))))['a'].value,
+                resolve_logic(wire_gates(update_gate(init_gates(parse_logic(i)), "b", resolve_logic(wire_gates(init_gates(parse_logic(i[0]))))['a'].value)))['a'].value
+                ),
+    lambda *i: (sum(map(len, i[0].splitlines())) - sum(map(len, map(unescape, map(lambda s: s[1:-1], i[0].splitlines())))),
+                sum(map(len, map(escape, i[0].splitlines()))) - sum(map(len, i[0].splitlines()))
+                ),
+    lambda *i: (shortest_route(i[0]),
+                longest_route(i[0]),
+                ),
 ]
 
 if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.day <= len(solutions):
-        input = inputs[args.day] if args.input is None else args.input
+        input = (inputs[args.day],) if args.input is None else args.input
         print tasks[args.day]
         print "Solution:"
-        print solutions[args.day](input)
+        print solutions[args.day](*input)
