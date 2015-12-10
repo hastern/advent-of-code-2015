@@ -256,8 +256,9 @@ solutions = [
     lambda *i: (shortest_route(i[0]),
                 longest_route(i[0]),
                 ),
-    lambda i, times=40: (len(recall(lambda s: merge_str(split_str(s)), i, int(times))),
-                         ),
+    lambda i, t1=40, t2=50: (len(recall(lambda s: merge_str(split_str(s)), i, int(t1))),
+                             len(recall(lambda s: merge_str(split_str(s)), i, int(t2))),
+                             ),
 ]
 
 if __name__ == "__main__":
