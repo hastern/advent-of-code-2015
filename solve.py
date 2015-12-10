@@ -220,6 +220,13 @@ longest_route = lambda net: fold(all_routes(net), lambda e, a: max((route_length
 shortest_route = lambda input: (lambda net: reduce(lambda a, e: min((sum([net[tuple(sorted(e[c:c + 2]))] for c in range(len(e) - 1)]), e), a), itertools.permutations(set(list(sum(net.keys(), ())))), (sys.maxint, None)))({tuple(sorted(parts[:3:2])): int(parts[4]) for parts in map(str.split, input.splitlines())})
 longest_route = lambda input: (lambda net: reduce(lambda a, e: max((sum([net[tuple(sorted(e[c:c + 2]))] for c in range(len(e) - 1)]), e), a), itertools.permutations(set(list(sum(net.keys(), ())))), (0, None)))({tuple(sorted(parts[:3:2])): int(parts[4]) for parts in map(str.split, input.splitlines())})
 
+
+push_tok = lambda l, t: l[-1].append(t) if l[-1][0] == t else l.append([t])
+split_str = lambda s: (lambda s, l=[[None]]: (l, [push_tok(l, t) for t in s]))(s)[0][1:]
+merge_str = lambda ls: "".join(["{}{}".format(len(l), l[0]) for l in ls])
+recall = lambda f, v, times=1: reduce(lambda a, e: f(a), range(times), v)
+
+
 solutions = [
     lambda *i: None,
     lambda *i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i[0])]),
@@ -249,6 +256,8 @@ solutions = [
     lambda *i: (shortest_route(i[0]),
                 longest_route(i[0]),
                 ),
+    lambda i, times=40: (len(recall(lambda s: merge_str(split_str(s)), i, int(times))),
+                         ),
 ]
 
 if __name__ == "__main__":
