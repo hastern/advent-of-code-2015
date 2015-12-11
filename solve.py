@@ -280,6 +280,7 @@ solutions = [
                              len(look_and_say_repeat(i, int(t2))),
                              ),
     lambda *i: (next_password(i[0]),
+                next_password(next_password(i[0])),
                 ),
 ]
 
