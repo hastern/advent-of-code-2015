@@ -224,7 +224,13 @@ longest_route = lambda input: (lambda net: reduce(lambda a, e: max((sum([net[tup
 push_tok = lambda l, t: l[-1].append(t) if l[-1][0] == t else l.append([t])
 split_str = lambda s: (lambda s, l=[[None]]: (l, [push_tok(l, t) for t in s]))(s)[0][1:]
 merge_str = lambda ls: "".join(["{}{}".format(len(l), l[0]) for l in ls])
+look_and_say = lambda s: merge_str(split_str(s))  # My Version
+look_and_say = lambda s: "".join(["{}{}".format(len(list(g)), k) for k, g in itertools.groupby(s)])  # Using Itertools
+
 recall = lambda f, v, times=1: reduce(lambda a, e: f(a), range(times), v)
+
+look_and_say_repeat = lambda v, n: reduce(lambda a, e: "".join(["{}{}".format(len(l), l[0]) for l in (lambda s, l=[[None]]: (l, [l[-1].append(t) if l[-1][0] == t else l.append([t]) for t in s]))(a)[0][1:]]), range(n), v)
+look_and_say_repeat = lambda v, n: reduce(lambda a, e: "".join(["{}{}".format(len(list(g)), k) for k, g in itertools.groupby(a)]), range(n), v)
 
 
 solutions = [
@@ -256,8 +262,8 @@ solutions = [
     lambda *i: (shortest_route(i[0]),
                 longest_route(i[0]),
                 ),
-    lambda i, t1=40, t2=50: (len(recall(lambda s: merge_str(split_str(s)), i, int(t1))),
-                             len(recall(lambda s: merge_str(split_str(s)), i, int(t2))),
+    lambda i, t1=40, t2=50: (len(look_and_say_repeat(i, int(t1))),
+                             len(look_and_say_repeat(i, int(t2))),
                              ),
 ]
 
