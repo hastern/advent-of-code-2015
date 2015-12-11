@@ -232,6 +232,20 @@ recall = lambda f, v, times=1: reduce(lambda a, e: f(a), range(times), v)
 look_and_say_repeat = lambda v, n: reduce(lambda a, e: "".join(["{}{}".format(len(l), l[0]) for l in (lambda s, l=[[None]]: (l, [l[-1].append(t) if l[-1][0] == t else l.append([t]) for t in s]))(a)[0][1:]]), range(n), v)
 look_and_say_repeat = lambda v, n: reduce(lambda a, e: "".join(["{}{}".format(len(list(g)), k) for k, g in itertools.groupby(a)]), range(n), v)
 
+next_sequence = lambda s: "".join((lambda m: m(m, s, 1))(lambda m, s, carry=0: [] if len(s) == 0 else m(m, s[:-1], s[-1] == 'z' and carry == 1) + [chr(((ord(s[-1]) - ord('a') + carry) % 26) + ord('a'))]))
+asc_seq = lambda cs: all([(ord(cs[i]) + 1) == ord(cs[i + 1]) for i in range(len(cs) - 1)])
+contains_asc_seq = lambda s, l=3: any([asc_seq(s[i:i + l]) for i in range(len(s) - l + 1)])
+
+valid_sequence = lambda s: not any(map(lambda c: c in 'iol', s)) and contains_asc_seq(s) and re.match("^.*(.)\\1.*(.)\\2.*$", s) is not None
+
+
+def next_password(s):
+    s = next_sequence(s)
+    while not valid_sequence(s):
+        s = next_sequence(s)
+        print s, "\r",
+    return s
+
 
 solutions = [
     lambda *i: None,
@@ -265,6 +279,8 @@ solutions = [
     lambda i, t1=40, t2=50: (len(look_and_say_repeat(i, int(t1))),
                              len(look_and_say_repeat(i, int(t2))),
                              ),
+    lambda *i: (next_password(i[0]),
+                ),
 ]
 
 if __name__ == "__main__":
