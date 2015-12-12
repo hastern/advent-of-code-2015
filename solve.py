@@ -248,23 +248,24 @@ def next_password(s):
     return s
 
 
-def flatten(v):
+def flatten(v, ignore_values=None):
     if isinstance(v, int):
         print v, "\r",
         yield v
     elif isinstance(v, list):
         for e in v:
-            for _e in flatten(e):
+            for _e in flatten(e, ignore_values):
                 yield _e
     elif isinstance(v, dict):
-        for e in v.itervalues():
-            for _e in flatten(e):
-                yield _e
+        if ignore_values is None or ignore_values not in v.values():
+            for e in v.itervalues():
+                for _e in flatten(e, ignore_values):
+                    yield _e
 
 
-def json_all_numbers(i):
+def json_all_numbers(i, ignore_values=None):
     raw = json.loads(i)
-    for num in flatten(raw):
+    for num in flatten(raw, ignore_values):
         yield num
 
 solutions = [
@@ -303,6 +304,7 @@ solutions = [
                 next_password(next_password(i[0])),
                 ),
     lambda *i: (sum(json_all_numbers(i[0])),
+                sum(json_all_numbers(i[0], ignore_values="red")),
                 )
 ]
 
