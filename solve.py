@@ -9,6 +9,7 @@ import Crypto.Hash.MD5 as MD5
 import pyparsing as pp
 import operator
 import itertools
+import json
 
 from tasks import tasks
 from inputs import inputs
@@ -247,6 +248,25 @@ def next_password(s):
     return s
 
 
+def flatten(v):
+    if isinstance(v, int):
+        print v, "\r",
+        yield v
+    elif isinstance(v, list):
+        for e in v:
+            for _e in flatten(e):
+                yield _e
+    elif isinstance(v, dict):
+        for e in v.itervalues():
+            for _e in flatten(e):
+                yield _e
+
+
+def json_all_numbers(i):
+    raw = json.loads(i)
+    for num in flatten(raw):
+        yield num
+
 solutions = [
     lambda *i: None,
     lambda *i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i[0])]),
@@ -282,6 +302,8 @@ solutions = [
     lambda *i: (next_password(i[0]),
                 next_password(next_password(i[0])),
                 ),
+    lambda *i: (sum(json_all_numbers(i[0])),
+                )
 ]
 
 if __name__ == "__main__":
