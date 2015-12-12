@@ -247,26 +247,20 @@ def next_password(s):
         print s, "\r",
     return s
 
+# First Combinator, defines a common closure for all four fold-functions
+sum_up = lambda input, ignore=None: (lambda fe, fl, fd, fv: fe(fe, fl, fd, fv, json.loads(input), ignore))(
+    # Fold Element: Select the appropriate fold-function based on the elements type
+    #               Uses dict.get to define default behaviour for unknown types
+    (lambda fe, fl, fd, fv, v, i, t="e": {int: fv, list: fl, dict: fd}.get(type(v), lambda fe, fl, fd, fv, v, i: 0)(fe, fl, fd, fv, v, i)),
+    # Fold list: Combinator for folding all elements of the list
+    (lambda fe, fl, fd, fv, v, i, t="l": (lambda f: f(f, v, 0, i))(lambda f, l, t, i: t if len(l) == 0 else f(f, l[1:], t + fe(fe, fl, fd, fv, l[0], i), i))),
+    # Fold dict: Combinator for folding all values of a dict,
+    #            except when one of the value is to be ignored
+    (lambda fe, fl, fd, fv, v, i, t="d": (lambda f: f(f, v.items(), 0, i))(lambda f, d, t, i: t if len(d) == 0 else (0 if d[0][1] == ignore else f(f, d[1:], t + fe(fe, fl, fd, fv, d[0][1], i), i)))),
+    # Fold value: To have the same interface for all types
+    (lambda fe, fl, fd, fv, v, i, t="v": v)
+)
 
-def flatten(v, ignore_values=None):
-    if isinstance(v, int):
-        print v, "\r",
-        yield v
-    elif isinstance(v, list):
-        for e in v:
-            for _e in flatten(e, ignore_values):
-                yield _e
-    elif isinstance(v, dict):
-        if ignore_values is None or ignore_values not in v.values():
-            for e in v.itervalues():
-                for _e in flatten(e, ignore_values):
-                    yield _e
-
-
-def json_all_numbers(i, ignore_values=None):
-    raw = json.loads(i)
-    for num in flatten(raw, ignore_values):
-        yield num
 
 solutions = [
     lambda *i: None,
@@ -303,8 +297,8 @@ solutions = [
     lambda *i: (next_password(i[0]),
                 next_password(next_password(i[0])),
                 ),
-    lambda *i: (sum(json_all_numbers(i[0])),
-                sum(json_all_numbers(i[0], ignore_values="red")),
+    lambda *i: (sum_up(i[0]),
+                sum_up(i[0], ignore="red"),
                 )
 ]
 
