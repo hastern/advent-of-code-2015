@@ -205,32 +205,12 @@ def transform_to_gv(input, fname="graph.gv"):
         output.write("}\n")
 
 
-def fold(_iterable, func=lambda e, a: e, init=None):
-    result = init
-    for elem in _iterable:
-        result = func(elem, result)
-    return result
-
-
-generate_net = lambda input: {tuple(sorted(parts[:3:2])): int(parts[4]) for parts in map(str.split, input.splitlines())}
-route_length = lambda net, route: sum([net[tuple(sorted(route[c:c + 2]))] for c in range(len(route) - 1)])
-all_routes = lambda net: itertools.permutations(set(list(sum(net.keys(), ()))))
-shortest_route = lambda net: fold(all_routes(net), lambda e, a: min((route_length(net, e), e), a), (sys.maxint, None))
-longest_route = lambda net: fold(all_routes(net), lambda e, a: max((route_length(net, e), e), a), (0, None))
 
 shortest_route = lambda input: (lambda net: reduce(lambda a, e: min((sum([net[tuple(sorted(e[c:c + 2]))] for c in range(len(e) - 1)]), e), a), itertools.permutations(set(list(sum(net.keys(), ())))), (sys.maxint, None)))({tuple(sorted(parts[:3:2])): int(parts[4]) for parts in map(str.split, input.splitlines())})
 longest_route = lambda input: (lambda net: reduce(lambda a, e: max((sum([net[tuple(sorted(e[c:c + 2]))] for c in range(len(e) - 1)]), e), a), itertools.permutations(set(list(sum(net.keys(), ())))), (0, None)))({tuple(sorted(parts[:3:2])): int(parts[4]) for parts in map(str.split, input.splitlines())})
 
 
-push_tok = lambda l, t: l[-1].append(t) if l[-1][0] == t else l.append([t])
-split_str = lambda s: (lambda s, l=[[None]]: (l, [push_tok(l, t) for t in s]))(s)[0][1:]
-merge_str = lambda ls: "".join(["{}{}".format(len(l), l[0]) for l in ls])
-look_and_say = lambda s: merge_str(split_str(s))  # My Version
-look_and_say = lambda s: "".join(["{}{}".format(len(list(g)), k) for k, g in itertools.groupby(s)])  # Using Itertools
 
-recall = lambda f, v, times=1: reduce(lambda a, e: f(a), range(times), v)
-
-look_and_say_repeat = lambda v, n: reduce(lambda a, e: "".join(["{}{}".format(len(l), l[0]) for l in (lambda s, l=[[None]]: (l, [l[-1].append(t) if l[-1][0] == t else l.append([t]) for t in s]))(a)[0][1:]]), range(n), v)
 look_and_say_repeat = lambda v, n: reduce(lambda a, e: "".join(["{}{}".format(len(list(g)), k) for k, g in itertools.groupby(a)]), range(n), v)
 
 next_sequence = lambda s: "".join((lambda m: m(m, s, 1))(lambda m, s, carry=0: [] if len(s) == 0 else m(m, s[:-1], s[-1] == 'z' and carry == 1) + [chr(((ord(s[-1]) - ord('a') + carry) % 26) + ord('a'))]))
