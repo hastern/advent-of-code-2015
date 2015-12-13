@@ -262,6 +262,29 @@ sum_up = lambda input, ignore=None: (lambda fe, fl, fd, fv: fe(fe, fl, fd, fv, j
 )
 
 
+happy_place = lambda input: (
+    (lambda people: (
+        (lambda quality: reduce(
+            lambda a, e: max((quality(people, e), e), a),
+            itertools.permutations(people.keys()),
+            (0, None)
+        ))(lambda people, sitting: sum([
+            people[sitting[p]][sitting[(p - 1) % len(sitting)]] + people[sitting[p]][sitting[(p + 1) % len(sitting)]]
+            for p in range(len(sitting))
+        ]))
+    ))({
+        k: dict(map(lambda e: (e[2], e[1]), g))
+        for k, g in itertools.groupby(
+            map(
+                lambda l: (lambda *p: (p[0], int(p[3]) if p[2] == "gain" else -int(p[3]), p[-1][:-1]))(*l.split()),
+                input.splitlines()
+            ),
+            lambda k: k[0]
+        )
+    })
+)
+
+
 solutions = [
     lambda *i: None,
     lambda *i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i[0])]),
@@ -299,6 +322,8 @@ solutions = [
                 ),
     lambda *i: (sum_up(i[0]),
                 sum_up(i[0], ignore="red"),
+                ),
+    lambda *i: (happy_place(i[0]),
                 )
 ]
 
