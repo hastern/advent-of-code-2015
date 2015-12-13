@@ -262,14 +262,14 @@ sum_up = lambda input, ignore=None: (lambda fe, fl, fd, fv: fe(fe, fl, fd, fv, j
 )
 
 
-happy_place = lambda input: (
+happy_place = lambda input, add_keys=[]: (
     (lambda people: (
         (lambda quality: reduce(
             lambda a, e: max((quality(people, e), e), a),
-            itertools.permutations(people.keys()),
+            itertools.permutations(people.keys() + add_keys),
             (0, None)
         ))(lambda people, sitting: sum([
-            people[sitting[p]][sitting[(p - 1) % len(sitting)]] + people[sitting[p]][sitting[(p + 1) % len(sitting)]]
+            people.get(sitting[p], {}).get(sitting[(p - 1) % len(sitting)], 0) + people.get(sitting[p], {}).get(sitting[(p + 1) % len(sitting)], 0)
             for p in range(len(sitting))
         ]))
     ))({
@@ -324,6 +324,7 @@ solutions = [
                 sum_up(i[0], ignore="red"),
                 ),
     lambda *i: (happy_place(i[0]),
+                happy_place(i[0], add_keys=["self"]),
                 )
 ]
 
