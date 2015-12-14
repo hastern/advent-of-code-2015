@@ -284,6 +284,18 @@ happy_place = lambda input, add_keys=[]: (
     )
 )
 
+fastest_reindeer = lambda input, times=1: (
+    (lambda reindeers, move: (
+        max([(move(*r, total_t=times), name) for name, r in reindeers.iteritems()])
+    ))({
+        parts[0]: (int(parts[3]), int(parts[6]), int(parts[13]))
+        for parts in map(str.split, input.splitlines())
+    }, lambda speed, fly_t, rest_t, total_t=1: (
+        ((fly_t * (total_t / (fly_t + rest_t))) + (min(total_t % (fly_t + rest_t), fly_t))) * speed
+    ))
+)
+
+
 solutions = [
     lambda *i: None,
     lambda *i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i[0])]),
@@ -324,7 +336,9 @@ solutions = [
                 ),
     lambda *i: (happy_place(i[0]),
                 happy_place(i[0], add_keys=["self"]),
-                )
+                ),
+    lambda i, times=2503: (fastest_reindeer(i, times),
+                           ),
 ]
 
 if __name__ == "__main__":
