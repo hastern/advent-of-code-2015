@@ -205,11 +205,32 @@ def transform_to_gv(input, fname="graph.gv"):
         output.write("}\n")
 
 
+brute_force_dict = lambda input, key_gen, val_gen, dict_prep, predicate, quality, permutation, init: (
+    (lambda d: reduce(
+        lambda a, e: predicate((quality(e, d), e), a),
+        permutation(d),
+        init
+    ))({
+        key_gen(parts): val_gen(parts)
+        for parts in dict_prep(input.splitlines())
+    })
+)
 
-shortest_route = lambda input: (lambda net: reduce(lambda a, e: min((sum([net[tuple(sorted(e[c:c + 2]))] for c in range(len(e) - 1)]), e), a), itertools.permutations(set(list(sum(net.keys(), ())))), (sys.maxint, None)))({tuple(sorted(parts[:3:2])): int(parts[4]) for parts in map(str.split, input.splitlines())})
-longest_route = lambda input: (lambda net: reduce(lambda a, e: max((sum([net[tuple(sorted(e[c:c + 2]))] for c in range(len(e) - 1)]), e), a), itertools.permutations(set(list(sum(net.keys(), ())))), (0, None)))({tuple(sorted(parts[:3:2])): int(parts[4]) for parts in map(str.split, input.splitlines())})
+find_route = lambda input, predicate, init: (
+    brute_force_dict(
+        input,
+        lambda parts: tuple(sorted(parts[:3:2])),
+        lambda parts: int(parts[4]),
+        lambda lines: map(str.split, lines),
+        predicate,
+        lambda e, d: sum([d[tuple(sorted(e[c:c + 2]))] for c in range(len(e) - 1)]),
+        lambda d: itertools.permutations(set(list(sum(d.keys(), ())))),
+        init,
+    )
+)
 
-
+longest_route = lambda input: find_route(input, max, (0, None))
+shortest_route = lambda input: find_route(input, min, (sys.maxint, None))
 
 look_and_say_repeat = lambda v, n: reduce(lambda a, e: "".join(["{}{}".format(len(list(g)), k) for k, g in itertools.groupby(a)]), range(n), v)
 
@@ -241,29 +262,27 @@ sum_up = lambda input, ignore=None: (lambda fe, fl, fd, fv: fe(fe, fl, fd, fv, j
     (lambda fe, fl, fd, fv, v, i, t="v": v)
 )
 
-
 happy_place = lambda input, add_keys=[]: (
-    (lambda people: (
-        (lambda quality: reduce(
-            lambda a, e: max((quality(people, e), e), a),
-            itertools.permutations(people.keys() + add_keys),
-            (0, None)
-        ))(lambda people, sitting: sum([
-            people.get(sitting[p], {}).get(sitting[(p - 1) % len(sitting)], 0) + people.get(sitting[p], {}).get(sitting[(p + 1) % len(sitting)], 0)
-            for p in range(len(sitting))
-        ]))
-    ))({
-        k: dict(map(lambda e: (e[2], e[1]), g))
-        for k, g in itertools.groupby(
+    brute_force_dict(
+        input,
+        lambda (k, g): k,
+        lambda (k, g): dict(map(lambda e: (e[2], e[1]), g)),
+        lambda lines: itertools.groupby(
             map(
                 lambda l: (lambda *p: (p[0], int(p[3]) if p[2] == "gain" else -int(p[3]), p[-1][:-1]))(*l.split()),
-                input.splitlines()
+                lines
             ),
             lambda k: k[0]
-        )
-    })
+        ),
+        max,
+        lambda sitting, people: sum([
+            people.get(sitting[p], {}).get(sitting[(p - 1) % len(sitting)], 0) + people.get(sitting[p], {}).get(sitting[(p + 1) % len(sitting)], 0)
+            for p in range(len(sitting))
+        ]),
+        lambda people: itertools.permutations(people.keys() + add_keys),
+        (0, None),
+    )
 )
-
 
 solutions = [
     lambda *i: None,
