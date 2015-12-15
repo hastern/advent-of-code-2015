@@ -314,7 +314,6 @@ fastest_reindeer = lambda input, times=1, points=False: (
     )
 )
 
-)
 
 best_ingredients = lambda input, spoons=100, keys=["capacity", "durability", "flavor", "texture"]: (
     (lambda ingredients, generator, value: (
