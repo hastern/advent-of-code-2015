@@ -284,27 +284,36 @@ happy_place = lambda input, add_keys=[]: (
     )
 )
 
-fastest_reindeer = lambda input, times=1: (
-    (lambda reindeers, move: (
-        max([(move(*r, total_t=times), name) for name, r in reindeers.iteritems()])
-    ))({
-        parts[0]: (int(parts[3]), int(parts[6]), int(parts[13]))
-        for parts in map(str.split, input.splitlines())
-    }, lambda speed, fly_t, rest_t, total_t=1: (
-        ((fly_t * (total_t / (fly_t + rest_t))) + (min(total_t % (fly_t + rest_t), fly_t))) * speed
-    ))
+fastest_reindeer = lambda input, times=1, points=False: (
+    (lambda reindeers, move, round, distance, position: (
+        {True: position, False: distance}[points](round, reindeers, move)
+    ))(
+        {  # Reindeer: Name is key, value is (speed, flying time, resting time)
+            parts[0]: (int(parts[3]), int(parts[6]), int(parts[13]))
+            for parts in map(str.split, input.splitlines())
+        },
+        # move a single reindeer
+        lambda speed, fly_t, rest_t, total_t=1: (
+            ((fly_t * (total_t / (fly_t + rest_t))) + \
+                (min(total_t % (fly_t + rest_t), fly_t))) * speed
+        ),
+        # Move all reindeers, and select the best (most distance) one
+        lambda rs, m, t: max([
+            (m(*r, total_t=t), name)
+            for name, r in rs.iteritems()
+        ]),
+        # Distance scoring: select the furthest reindeer
+        lambda r, rs, m: r(rs, m, times),
+        # Point scoring: select the reindeer longest time in the lead
+        lambda r, rs, m: (
+            collections.Counter([
+                r(rs, m, t)[1]
+                for t in range(1, times + 1)
+            ]).most_common(1)[0]
+        )
+    )
 )
 
-fastest_reindeer_points = lambda input, times=1: (
-    (lambda reindeers, move: (collections.Counter([
-        max([(move(*r, total_t=t), name) for name, r in reindeers.iteritems()])[1]
-        for t in range(1, times + 1)
-    ])))({
-        parts[0]: (int(parts[3]), int(parts[6]), int(parts[13]))
-        for parts in map(str.split, input.splitlines())
-    }, lambda speed, fly_t, rest_t, total_t=1: (
-        ((fly_t * (total_t / (fly_t + rest_t))) + (min(total_t % (fly_t + rest_t), fly_t))) * speed
-    ))
 )
 
 
@@ -350,7 +359,7 @@ solutions = [
                 happy_place(i[0], add_keys=["self"]),
                 ),
     lambda i, times=2503: (fastest_reindeer(i, times),
-                           fastest_reindeer_points(i, times),
+                           fastest_reindeer(i, times, True),
                            ),
 ]
 
