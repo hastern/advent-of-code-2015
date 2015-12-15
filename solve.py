@@ -234,19 +234,46 @@ shortest_route = lambda input: find_route(input, min, (sys.maxint, None))
 
 look_and_say_repeat = lambda v, n: reduce(lambda a, e: "".join(["{}{}".format(len(list(g)), k) for k, g in itertools.groupby(a)]), range(n), v)
 
-next_sequence = lambda s: "".join((lambda m: m(m, s, 1))(lambda m, s, carry=0: [] if len(s) == 0 else m(m, s[:-1], s[-1] == 'z' and carry == 1) + [chr(((ord(s[-1]) - ord('a') + carry) % 26) + ord('a'))]))
-asc_seq = lambda cs: all([(ord(cs[i]) + 1) == ord(cs[i + 1]) for i in range(len(cs) - 1)])
-contains_asc_seq = lambda s, l=3: any([asc_seq(s[i:i + l]) for i in range(len(s) - l + 1)])
-
-valid_sequence = lambda s: not any(map(lambda c: c in 'iol', s)) and contains_asc_seq(s) and re.match("^.*(.)\\1.*(.)\\2.*$", s) is not None
-
-
-def next_password(s):
-    s = next_sequence(s)
-    while not valid_sequence(s):
-        s = next_sequence(s)
-        print s, "\r",
-    return s
+next_password = lambda previous: (
+    (lambda generator, validator, state={"ready": False}:
+        # Abusing reduce to create a loop and not run out of stack space
+        # I hope that 1 million candidates are enough
+        reduce(lambda a, e: (lambda new: (new, state.update(ready=validator(new)))[0])(generator(a)),
+               (lambda: [(yield None) if not state['ready'] else None for _ in xrange(1000000)])(),
+               previous
+               )
+        # # Y-Combinator for iterating possible candidates
+        # (lambda f: f(f, previous))(
+        #     # Using the inner lambda as closure for generated candidate
+        #     lambda self, candidate: (lambda pw: pw if validator(pw) else self(self, pw))(generator(candidate))
+        # )
+     )(
+        # Password sequence generator
+        lambda sequence: "".join(
+            (lambda m: m(m, sequence, 1))(
+                lambda m, s, carry=0: (
+                    [] if len(s) == 0 else m(m, s[:-1], s[-1] == 'z' and carry == 1) + [chr(((ord(s[-1]) - ord('a') + carry) % 26) + ord('a'))]
+                )
+            )
+        ),
+        # Password validator
+        lambda sequence: (lambda *predicates: all(map(lambda p: p(sequence), predicates)))(
+            # Passwords may not contain the letters i, o, or l, as these letters can
+            # be mistaken for other characters and are therefore confusing.
+            (lambda s: not any(map(lambda c: c in 'iol', s))),
+            # Passwords must include one increasing straight of at least three
+            # letters, like abc, bcd, cde, and so on, up to xyz. They cannot skip
+            # letters; abd doesn't count.
+            (lambda s, l=3: any([
+                (lambda cs: all([(ord(cs[i]) + 1) == ord(cs[i + 1]) for i in range(len(cs) - 1)]))(s[i:i + l])
+                for i in range(len(s) - l + 1)
+            ])),
+            # Passwords must contain at least two different, non-overlapping pairs
+            # of letters, like aa, bb, or zz.
+            (lambda s: re.match("^.*(.)\\1.*(.)\\2.*$", s) is not None)
+        )
+    )
+)
 
 # First Combinator, defines a common closure for all four fold-functions
 sum_up = lambda input, ignore=None: (lambda fe, fl, fd, fv: fe(fe, fl, fd, fv, json.loads(input), ignore))(
