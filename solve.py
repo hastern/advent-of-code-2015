@@ -315,14 +315,14 @@ fastest_reindeer = lambda input, times=1, points=False: (
 )
 
 
-best_ingredients = lambda input, spoons=100, keys=["capacity", "durability", "flavor", "texture"]: (
-    (lambda ingredients, generator, value: (
+best_ingredients = lambda input, spoons=100, calorie_value=0, keys=["capacity", "durability", "flavor", "texture"]: (
+    (lambda ingredients, generator, value:
         reduce(
             lambda a, e: max((value(ingredients, e), e), a),
             generator(ingredients.keys()),
             (0, None)
         )
-    ))(
+     )(
         {
             name: {attr: int(val) for attr, val in map(str.split, values.split(","))}
             for name, values in map(lambda l: l.split(":"), input.splitlines())
@@ -330,20 +330,27 @@ best_ingredients = lambda input, spoons=100, keys=["capacity", "durability", "fl
         # Generator for all permutations of ingredient mixtures
         # yields dictionaries with ingredients as keys, and amounts as values.
         lambda ingredients: [
-            (yield {i: b - a - 1 for i, a, b in zip(ingredients, (-1,) + c, c + (spoons + len(ingredients) - 1,))})
+            (yield {
+                i: b - a - 1
+                for i, a, b in zip(ingredients, (-1,) + c, c + (spoons + len(ingredients) - 1,))
+            })
             for c in itertools.combinations(range(spoons + len(ingredients) - 1), len(ingredients) - 1)
         ],
-        # Calculate values of all ingredients
+        # Calculate values of all ingredients, returns 0 if the calorie value is not matched
         lambda ingredients, amounts:
             reduce(lambda a, e: a * e, [
                 max(0, sum([
                     ingredients[ingredient][key] * amount
                     for ingredient, amount in amounts.iteritems()
-                ]))
+                ]) if calorie_value == 0 or sum([
+                    ingredients[ingredient]["calories"] * amount
+                    for ingredient, amount in amounts.iteritems()
+                ]) == calorie_value else 0)
                 for key in keys
-            ], 1)
+            ], 1),
     )
 )
+
 
 solutions = [
     lambda *i: None,
@@ -390,6 +397,7 @@ solutions = [
                            fastest_reindeer(i, times, True),
                            ),
     lambda *i: (best_ingredients(i[0]),
+                best_ingredients(i[0], calorie_value=500),
                 ),
 ]
 
