@@ -3042,5 +3042,8 @@ Dasher can fly 10 km/s for 4 seconds, but then must rest for 37 seconds.
 Comet can fly 3 km/s for 37 seconds, but then must rest for 76 seconds.
 Prancer can fly 9 km/s for 12 seconds, but then must rest for 97 seconds.
 Dancer can fly 37 km/s for 1 seconds, but then must rest for 36 seconds.""",
+    """Sugar: capacity 3, durability 0, flavor 0, texture -3, calories 2
+Sprinkles: capacity -3, durability 3, flavor 0, texture 0, calories 9
+Candy: capacity -1, durability 0, flavor 4, texture 0, calories 1
+Chocolate: capacity 0, durability 0, flavor -2, texture 2, calories 8""",
 ]
-
