@@ -379,6 +379,32 @@ best_ingredients = lambda input, spoons=100, calorie_value=0, keys=["capacity", 
 )
 
 
+sue_who = lambda input, ticker = {"children": 3,
+                                  "cats": 7,
+                                  "samoyeds": 2,
+                                  "pomeranians": 3,
+                                  "akitas": 0,
+                                  "vizslas": 0,
+                                  "goldfish": 5,
+                                  "trees": 3,
+                                  "cars": 2,
+                                  "perfumes": 1,
+                                  }: (
+    (lambda list_of_sue, ticker_set: (
+        filter(
+            lambda (nr, sue): sue <= ticker_set(ticker),
+            enumerate(list_of_sue, start=1)
+        )
+    ))(
+        [
+            frozenset((fact, int(count)) for fact, count in map(lambda f: map(str.strip, f.split(":", 1)), facts.split(",")))
+            for sue, facts in map(lambda l: map(str.strip, l.split(":", 1)), input.splitlines())
+        ],
+        lambda t: frozenset((k, v) for k, v in t.iteritems())
+    )
+)
+
+
 solutions = [
     lambda *i: None,
     lambda *i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i[0])]),
@@ -426,6 +452,8 @@ solutions = [
     lambda *i: (best_ingredients(i[0]),
                 best_ingredients(i[0], calorie_value=500),
                 ),
+    lambda *i: (sue_who(i[0]),
+                )
 ]
 
 if __name__ == "__main__":
