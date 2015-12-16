@@ -378,21 +378,20 @@ best_ingredients = lambda input, spoons=100, calorie_value=0, keys=["capacity", 
     )
 )
 
-
-sue_who = lambda input, ticker = {"children": 3,
-                                  "cats": 7,
-                                  "samoyeds": 2,
-                                  "pomeranians": 3,
-                                  "akitas": 0,
-                                  "vizslas": 0,
-                                  "goldfish": 5,
-                                  "trees": 3,
-                                  "cars": 2,
-                                  "perfumes": 1,
-                                  }: (
-    (lambda list_of_sue, ticker_set: (
+sue_who = lambda input, ticker={"children": 3,
+                                "cats": 7,
+                                "samoyeds": 2,
+                                "pomeranians": 3,
+                                "akitas": 0,
+                                "vizslas": 0,
+                                "goldfish": 5,
+                                "trees": 3,
+                                "cars": 2,
+                                "perfumes": 1,
+                                }, greater=(), lesser=(): (
+    (lambda list_of_sue, ticker_set, compare_sets: (
         filter(
-            lambda (nr, sue): sue <= ticker_set(ticker),
+            lambda (nr, sue): compare_sets(sue, ticker_set(ticker)),
             enumerate(list_of_sue, start=1)
         )
     ))(
@@ -400,10 +399,22 @@ sue_who = lambda input, ticker = {"children": 3,
             frozenset((fact, int(count)) for fact, count in map(lambda f: map(str.strip, f.split(":", 1)), facts.split(",")))
             for sue, facts in map(lambda l: map(str.strip, l.split(":", 1)), input.splitlines())
         ],
-        lambda t: frozenset((k, v) for k, v in t.iteritems())
+        # Generate a set from the ticker output
+        lambda t: frozenset((k, v) for k, v in t.iteritems()),
+        # Manual set comparison, since we need fuzzy comparison for part 2
+        # The inner lambda is used only if lesser or greater are set.
+        #  It act's as a closure for the counters.
+        lambda s, t: (lambda sc, st, compare: (
+            all([compare(k, sc[k], st[k]) for k in st if k in sc])
+        ))(
+            collections.Counter({k: v for k, v in s}),
+            collections.Counter({k: v for k, v in t}),
+            lambda k, l, r: l > r if k in greater else l < r if k in lesser else l == r,
+        ) if (len(greater) + len(lesser)) > 0 else s <= t
     )
 )
 
+sue_who = lambda input, ticker={"children": 3, "cats": 7, "samoyeds": 2, "pomeranians": 3, "akitas": 0, "vizslas": 0, "goldfish": 5, "trees": 3, "cars": 2, "perfumes": 1}, greater=(), lesser=(): ((lambda list_of_sue, ticker_set, compare_sets: (filter(lambda (nr, sue): compare_sets(sue, ticker_set(ticker)), enumerate(list_of_sue, start=1))))([frozenset((fact, int(count)) for fact, count in map(lambda f: map(str.strip, f.split(":", 1)), facts.split(","))) for sue, facts in map(lambda l: map(str.strip, l.split(":", 1)), input.splitlines())], lambda t: frozenset((k, v) for k, v in t.iteritems()), lambda s, t: (lambda sc, st, compare: (all([compare(k, sc[k], st[k]) for k in st if k in sc])))(collections.Counter({k: v for k, v in s}), collections.Counter({k: v for k, v in t}), lambda k, l, r: l > r if k in greater else l < r if k in lesser else l == r) if (len(greater) + len(lesser)) > 0 else s <= t))
 
 solutions = [
     lambda *i: None,
@@ -453,6 +464,7 @@ solutions = [
                 best_ingredients(i[0], calorie_value=500),
                 ),
     lambda *i: (sue_who(i[0]),
+                sue_who(i[0], greater=("cats", "trees"), lesser=("pomeranians", "goldfish"))
                 )
 ]
 
