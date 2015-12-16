@@ -3,19 +3,29 @@
 
 tasks = [
     None,
-    """--- Day 1: Not Quite Lisp ---
+    ("""--- Day 1: Not Quite Lisp ---
 
-Santa was hoping for a white Christmas, but his weather machine's "snow" function is powered by stars, and he's fresh out! To save Christmas, he needs you to collect fifty stars by December 25th.
+Santa was hoping for a white Christmas, but his weather machine's "snow"
+function is powered by stars, and he's fresh out! To save Christmas, he
+needs you to collect fifty stars by December 25th.
 
-Collect stars by helping Santa solve puzzles. Two puzzles will be made available on each day in the advent calendar; the second puzzle is unlocked when you complete the first. Each puzzle grants one star. Good luck!
+Collect stars by helping Santa solve puzzles. Two puzzles will be made
+available on each day in the advent calendar; the second puzzle is
+unlocked when you complete the first. Each puzzle grants one star. Good
+luck!
 
 Here's an easy puzzle to warm you up.
 
-Santa is trying to deliver presents in a large apartment building, but he can't find the right floor - the directions he got are a little confusing. He starts on the ground floor (floor 0) and then follows the instructions one character at a time.
+Santa is trying to deliver presents in a large apartment building, but
+he can't find the right floor - the directions he got are a little
+confusing. He starts on the ground floor (floor 0) and then follows the
+instructions one character at a time.
 
-An opening parenthesis, (, means he should go up one floor, and a closing parenthesis, ), means he should go down one floor.
+An opening parenthesis, (, means he should go up one floor, and a
+closing parenthesis, ), means he should go down one floor.
 
-The apartment building is very tall, and the basement is very deep; he will never find the top or bottom floors.
+The apartment building is very tall, and the basement is very deep; he
+will never find the top or bottom floors.
 
 For example:
 
@@ -24,162 +34,260 @@ For example:
 ))((((( also results in floor 3.
 ()) and ))( both result in floor -1 (the first basement level).
 ))) and )())()) both result in floor -3.
-To what floor do the instructions take Santa?
+To what floor do the instructions take Santa?""",
+        """ --- Part Two ---
 
---- Part Two ---
-
-Now, given the same instructions, find the position of the first character that causes him to enter the basement (floor -1). The first character in the instructions has position 1, the second character has position 2, and so on.
+Now, given the same instructions, find the position of the first
+character that causes him to enter the basement (floor -1). The first
+character in the instructions has position 1, the second character has
+position 2, and so on.
 
 For example:
 
 ) causes him to enter the basement at character position 1.
 ()()) causes him to enter the basement at character position 5.
-What is the position of the character that causes Santa to first enter the basement?
-""",
-    """--- Day 2: I Was Told There Would Be No Math ---
 
-The elves are running low on wrapping paper, and so they need to submit an order for more. They have a list of the dimensions (length l, width w, and height h) of each present, and only want to order exactly as much as they need.
+What is the position of the character that causes Santa to first enter
+the basement?"""),
+    ("""--- Day 2: I Was Told There Would Be No Math ---
 
-Fortunately, every present is a box (a perfect right rectangular prism), which makes calculating the required wrapping paper for each gift a little easier: find the surface area of the box, which is 2*l*w + 2*w*h + 2*h*l. The elves also need a little extra paper for each present: the area of the smallest side.
+The elves are running low on wrapping paper, and so they need to submit
+an order for more. They have a list of the dimensions
+    (length l, width w, and height h)
+of each present, and only want to order exactly as much as they need.
 
-For example:
-
-A present with dimensions 2x3x4 requires 2*6 + 2*12 + 2*8 = 52 square feet of wrapping paper plus 6 square feet of slack, for a total of 58 square feet.
-A present with dimensions 1x1x10 requires 2*1 + 2*10 + 2*10 = 42 square feet of wrapping paper plus 1 square foot of slack, for a total of 43 square feet.
-All numbers in the elves' list are in feet. How many total square feet of wrapping paper should they order?
-
---- Part Two ---
-
-The elves are also running low on ribbon. Ribbon is all the same width, so they only have to worry about the length they need to order, which they would again like to be exact.
-
-The ribbon required to wrap a present is the shortest distance around its sides, or the smallest perimeter of any one face. Each present also requires a bow made out of ribbon as well; the feet of ribbon required for the perfect bow is equal to the cubic feet of volume of the present. Don't ask how they tie the bow, though; they'll never tell.
+Fortunately, every present is a box (a perfect right rectangular prism),
+which makes calculating the required wrapping paper for each gift a
+little easier: find the surface area of the box, which is
+2*l*w + 2*w*h + 2*h*l. The elves also need a little extra paper for each
+present: the area of the smallest side.
 
 For example:
 
-A present with dimensions 2x3x4 requires 2+2+3+3 = 10 feet of ribbon to wrap the present plus 2*3*4 = 24 feet of ribbon for the bow, for a total of 34 feet.
-A present with dimensions 1x1x10 requires 1+1+1+1 = 4 feet of ribbon to wrap the present plus 1*1*10 = 10 feet of ribbon for the bow, for a total of 14 feet.
-How many total feet of ribbon should they order?
-""",
-    """--- Day 3: Perfectly Spherical Houses in a Vacuum ---
+A present with dimensions 2x3x4 requires 2*6 + 2*12 + 2*8 = 52 square
+    feet of wrapping paper plus 6 square feet of slack, for a total
+    of 58 square feet.
+A present with dimensions 1x1x10 requires 2*1 + 2*10 + 2*10 = 42 square
+    feet of wrapping paper plus 1 square foot of slack, for a total
+    of 43 square feet.
 
-Santa is delivering presents to an infinite two-dimensional grid of houses.
+All numbers in the elves' list are in feet. How many total square feet
+of wrapping paper should they order?""",
+        """ --- Part Two ---
 
-He begins by delivering a present to the house at his starting location, and then an elf at the North Pole calls him via radio and tells him where to move next. Moves are always exactly one house to the north (^), south (v), east (>), or west (<). After each move, he delivers another present to the house at his new location.
+The elves are also running low on ribbon. Ribbon is all the same width,
+so they only have to worry about the length they need to order, which
+they would again like to be exact.
 
-However, the elf back at the north pole has had a little too much eggnog, and so his directions are a little off, and Santa ends up visiting some houses more than once. How many houses receive at least one present?
+The ribbon required to wrap a present is the shortest distance around
+its sides, or the smallest perimeter of any one face. Each present also
+requires a bow made out of ribbon as well; the feet of ribbon required
+for the perfect bow is equal to the cubic feet of volume of the present.
+Don't ask how they tie the bow, though; they'll never tell.
 
 For example:
 
-> delivers presents to 2 houses: one at the starting location, and one to the east.
-^>v< delivers presents to 4 houses in a square, including twice to the house at his starting/ending location.
-^v^v^v^v^v delivers a bunch of presents to some very lucky children at only 2 houses.
+A present with dimensions 2x3x4 requires 2+2+3+3 = 10 feet of ribbon to
+wrap the present plus 2*3*4 = 24 feet of ribbon for the bow, for a total
+of 34 feet.
 
---- Part Two ---
+A present with dimensions 1x1x10 requires 1+1+1+1 = 4 feet of ribbon to
+wrap the present plus 1*1*10 = 10 feet of ribbon for the bow, for a total
+of 14 feet.
 
-The next year, to speed up the process, Santa creates a robot version of himself, Robo-Santa, to deliver presents with him.
+How many total feet of ribbon should they order?"""),
+    ("""--- Day 3: Perfectly Spherical Houses in a Vacuum ---
 
-Santa and Robo-Santa start at the same location (delivering two presents to the same starting house), then take turns moving based on instructions from the elf, who is eggnoggedly reading from the same script as the previous year.
+Santa is delivering presents to an infinite two-dimensional grid of
+houses.
+
+He begins by delivering a present to the house at his starting location,
+and then an elf at the North Pole calls him via radio and tells him
+where to move next. Moves are always exactly one house to the north (^),
+south (v), east (>), or west (<). After each move, he delivers another
+present to the house at his new location.
+
+However, the elf back at the north pole has had a little too much
+eggnog, and so his directions are a little off, and Santa ends up
+visiting some houses more than once. How many houses receive at least
+one present?
+
+For example:
+
+> delivers presents to 2 houses: one at the starting location, and one
+    to the east.
+^>v< delivers presents to 4 houses in a square, including twice to the
+    house at his starting/ending location.
+^v^v^v^v^v delivers a bunch of presents to some very lucky children at
+    only 2 houses.""",
+        """ --- Part Two ---
+
+The next year, to speed up the process, Santa creates a robot version of
+himself, Robo-Santa, to deliver presents with him.
+
+Santa and Robo-Santa start at the same location (delivering two presents
+to the same starting house), then take turns moving based on
+instructions from the elf, who is eggnoggedly reading from the same
+script as the previous year.
 
 This year, how many houses receive at least one present?
 
 For example:
 
-^v delivers presents to 3 houses, because Santa goes north, and then Robo-Santa goes south.
-^>v< now delivers presents to 3 houses, and Santa and Robo-Santa end up back where they started.
-^v^v^v^v^v now delivers presents to 11 houses, with Santa going one direction and Robo-Santa going the other.
-""",
-    """--- Day 4: The Ideal Stocking Stuffer ---
+^v delivers presents to 3 houses, because Santa goes north, and then
+    Robo-Santa goes south.
+^>v< now delivers presents to 3 houses, and Santa and Robo-Santa end up
+    back where they started.
+^v^v^v^v^v now delivers presents to 11 houses, with Santa going one
+    direction and Robo-Santa going the other."""),
+    ("""--- Day 4: The Ideal Stocking Stuffer ---
 
-Santa needs help mining some AdventCoins (very similar to bitcoins) to use as gifts for all the economically forward-thinking little girls and boys.
+Santa needs help mining some AdventCoins (very similar to bitcoins) to
+use as gifts for all the economically forward-thinking little girls and
+boys.
 
-To do this, he needs to find MD5 hashes which, in hexadecimal, start with at least five zeroes. The input to the MD5 hash is some secret key (your puzzle input, given below) followed by a number in decimal. To mine AdventCoins, you must find Santa the lowest positive number (no leading zeroes: 1, 2, 3, ...) that produces such a hash.
+To do this, he needs to find MD5 hashes which, in hexadecimal, start
+with at least five zeroes. The input to the MD5 hash is some secret key
+(your puzzle input, given below) followed by a number in decimal.
+To mine AdventCoins, you must find Santa the lowest positive number
+(no leading zeroes: 1, 2, 3, ...) that produces such a hash.
 
 For example:
 
-If your secret key is abcdef, the answer is 609043, because the MD5 hash of abcdef609043 starts with five zeroes (000001dbbfa...), and it is the lowest such number to do so.
-If your secret key is pqrstuv, the lowest number it combines with to make an MD5 hash starting with five zeroes is 1048970; that is, the MD5 hash of pqrstuv1048970 looks like 000006136ef....
+If your secret key is abcdef, the answer is 609043, because the MD5 hash
+    of abcdef609043 starts with five zeroes (000001dbbfa...), and it is
+    the lowest such number to do so.
+If your secret key is pqrstuv, the lowest number it combines with to
+    make an MD5 hash starting with five zeroes is 1048970; that is,
+    the MD5 hash of pqrstuv1048970 looks like 000006136ef....""",
+        """ --- Part Two ---
 
---- Part Two ---
+Now find one that starts with six zeroes."""),
+    ("""--- Day 5: Doesn't He Have Intern-Elves For This? ---
 
-Now find one that starts with six zeroes.
-""",
-    """--- Day 5: Doesn't He Have Intern-Elves For This? ---
-
-Santa needs help figuring out which strings in his text file are naughty or nice.
+Santa needs help figuring out which strings in his text file are naughty
+or nice.
 
 A nice string is one with all of the following properties:
 
-It contains at least three vowels (aeiou only), like aei, xazegov, or aeiouaeiouaeiou.
-It contains at least one letter that appears twice in a row, like xx, abcdde (dd), or aabbccdd (aa, bb, cc, or dd).
-It does not contain the strings ab, cd, pq, or xy, even if they are part of one of the other requirements.
+It contains at least three vowels (aeiou only), like aei, xazegov,
+    or aeiouaeiouaeiou.
+It contains at least one letter that appears twice in a row, like xx,
+    abcdde (dd), or aabbccdd (aa, bb, cc, or dd).
+It does not contain the strings ab, cd, pq, or xy, even if they are part
+    of one of the other requirements.
+
 For example:
 
-ugknbfddgicrmopn is nice because it has at least three vowels (u...i...o...), a double letter (...dd...), and none of the disallowed substrings.
-aaa is nice because it has at least three vowels and a double letter, even though the letters used by different rules overlap.
+ugknbfddgicrmopn is nice because it has at least three vowels (u...i...o...),
+    a double letter (...dd...), and none of the disallowed substrings.
+aaa is nice because it has at least three vowels and a double letter,
+    even though the letters used by different rules overlap.
 jchzalrnumimnmhp is naughty because it has no double letter.
 haegwjzuvuyypxyu is naughty because it contains the string xy.
 dvszwmarrgswjxmb is naughty because it contains only one vowel.
-How many strings are nice?
 
---- Part Two ---
+How many strings are nice?""",
+        """ --- Part Two ---
 
-Realizing the error of his ways, Santa has switched to a better model of determining whether a string is naughty or nice. None of the old rules apply, as they are all clearly ridiculous.
+Realizing the error of his ways, Santa has switched to a better model of
+determining whether a string is naughty or nice. None of the old rules
+apply, as they are all clearly ridiculous.
 
 Now, a nice string is one with all of the following properties:
 
-It contains a pair of any two letters that appears at least twice in the string without overlapping, like xyxy (xy) or aabcdefgaa (aa), but not like aaa (aa, but it overlaps).
-It contains at least one letter which repeats with exactly one letter between them, like xyx, abcdefeghi (efe), or even aaa.
+It contains a pair of any two letters that appears at least twice in the
+    string without overlapping, like xyxy (xy) or aabcdefgaa (aa), but
+    not like aaa (aa, but it overlaps).
+It contains at least one letter which repeats with exactly one letter
+    between them, like xyx, abcdefeghi (efe), or even aaa.
+
 For example:
 
-qjhvhtzxzqqjkmpb is nice because is has a pair that appears twice (qj) and a letter that repeats with exactly one letter between them (zxz).
-xxyxx is nice because it has a pair that appears twice and a letter that repeats with one between, even though the letters used by each rule overlap.
-uurcxstgmygtbstg is naughty because it has a pair (tg) but no repeat with a single letter between them.
-ieodomkazucvgmuy is naughty because it has a repeating letter with one between (odo), but no pair that appears twice.
-How many strings are nice under these new rules?
-""",
-    """--- Day 6: Probably a Fire Hazard ---
+qjhvhtzxzqqjkmpb is nice because is has a pair that appears twice (qj)
+    and a letter that repeats with exactly one letter between them (zxz).
+xxyxx is nice because it has a pair that appears twice and a letter that
+    repeats with one between, even though the letters used by each rule
+    overlap.
+uurcxstgmygtbstg is naughty because it has a pair (tg) but no repeat
+    with a single letter between them.
+ieodomkazucvgmuy is naughty because it has a repeating letter with one
+    between (odo), but no pair that appears twice.
 
-Because your neighbors keep defeating you in the holiday house decorating contest year after year, you've decided to deploy one million lights in a 1000x1000 grid.
+How many strings are nice under these new rules?"""),
+    ("""--- Day 6: Probably a Fire Hazard ---
 
-Furthermore, because you've been especially nice this year, Santa has mailed you instructions on how to display the ideal lighting configuration.
+Because your neighbors keep defeating you in the holiday house
+decorating contest year after year, you've decided to deploy one
+million lights in a 1000x1000 grid.
 
-Lights in your grid are numbered from 0 to 999 in each direction; the lights at each corner are at 0,0, 0,999, 999,999, and 999,0. The instructions include whether to turn on, turn off, or toggle various inclusive ranges given as coordinate pairs. Each coordinate pair represents opposite corners of a rectangle, inclusive; a coordinate pair like 0,0 through 2,2 therefore refers to 9 lights in a 3x3 square. The lights all start turned off.
+Furthermore, because you've been especially nice this year, Santa has
+mailed you instructions on how to display the ideal lighting
+configuration.
 
-To defeat your neighbors this year, all you have to do is set up your lights by doing the instructions Santa sent you in order.
+Lights in your grid are numbered from 0 to 999 in each direction; the
+lights at each corner are at 0,0, 0,999, 999,999, and 999,0. The
+instructions include whether to turn on, turn off, or toggle various
+inclusive ranges given as coordinate pairs. Each coordinate pair
+represents opposite corners of a rectangle, inclusive; a coordinate pair
+like 0,0 through 2,2 therefore refers to 9 lights in a 3x3 square. The
+lights all start turned off.
+
+To defeat your neighbors this year, all you have to do is set up your
+lights by doing the instructions Santa sent you in order.
 
 For example:
 
 turn on 0,0 through 999,999 would turn on (or leave on) every light.
-toggle 0,0 through 999,0 would toggle the first line of 1000 lights, turning off the ones that were on, and turning on the ones that were off.
-turn off 499,499 through 500,500 would turn off (or leave off) the middle four lights.
-After following the instructions, how many lights are lit?
+toggle 0,0 through 999,0 would toggle the first line of 1000 lights,
+    turning off the ones that were on, and turning on the ones that
+    were off.
+turn off 499,499 through 500,500 would turn off (or leave off) the
+    middle four lights.
 
---- Part Two ---
+After following the instructions, how many lights are lit?""",
+        """--- Part Two ---
 
-You just finish implementing your winning light pattern when you realize you mistranslated Santa's message from Ancient Nordic Elvish.
+You just finish implementing your winning light pattern when you
+realize you mistranslated Santa's message from Ancient Nordic Elvish.
 
-The light grid you bought actually has individual brightness controls; each light can have a brightness of zero or more. The lights all start at zero.
+The light grid you bought actually has individual brightness controls;
+each light can have a brightness of zero or more. The lights all start
+at zero.
 
-The phrase turn on actually means that you should increase the brightness of those lights by 1.
+The phrase turn on actually means that you should increase the
+brightness of those lights by 1.
 
-The phrase turn off actually means that you should decrease the brightness of those lights by 1, to a minimum of zero.
+The phrase turn off actually means that you should decrease the
+brightness of those lights by 1, to a minimum of zero.
 
-The phrase toggle actually means that you should increase the brightness of those lights by 2.
+The phrase toggle actually means that you should increase the brightness
+of those lights by 2.
 
-What is the total brightness of all lights combined after following Santa's instructions?
+What is the total brightness of all lights combined after following
+Santa's instructions?
 
 For example:
 
 turn on 0,0 through 0,0 would increase the total brightness by 1.
-toggle 0,0 through 999,999 would increase the total brightness by 2000000.
-""",
-    """--- Day 7: Some Assembly Required ---
+toggle 0,0 through 999,999 would increase the total brightness
+    by 2000000."""),
+    ("""--- Day 7: Some Assembly Required ---
 
-This year, Santa brought little Bobby Tables a set of wires and bitwise logic gates! Unfortunately, little Bobby is a little under the recommended age range, and he needs help assembling the circuit.
+ This year, Santa brought little Bobby Tables a set of wires and
+bitwise logic gates! Unfortunately, little Bobby is a little under the
+recommended age range, and he needs help assembling the circuit.
 
-Each wire has an identifier (some lowercase letters) and can carry a 16-bit signal (a number from 0 to 65535). A signal is provided to each wire by a gate, another wire, or some specific value. Each wire can only get a signal from one source, but can provide its signal to multiple destinations. A gate provides no signal until all of its inputs have a signal.
+Each wire has an identifier (some lowercase letters) and can carry a
+16-bit signal (a number from 0 to 65535). A signal is provided to each
+wire by a gate, another wire, or some specific value. Each wire can only
+get a signal from one source, but can provide its signal to multiple
+destinations. A gate provides no signal until all of its inputs have a
+signal.
 
-The included instructions booklet describe how to connect the parts together: x AND y -> z means to connect wires x and y to an AND gate, and then connect its output to wire z.
+The included instructions booklet describe how to connect the parts
+together: x AND y -> z means to connect wires x and y to an AND gate,
+and then connect its output to wire z.
 
 For example:
 
@@ -187,7 +295,11 @@ For example:
 x AND y -> z means that the bitwise AND of wire x and wire y is provided to wire z.
 p LSHIFT 2 -> q means that the value from wire p is left-shifted by 2 and then provided to wire q.
 NOT e -> f means that the bitwise complement of the value from wire e is provided to wire f.
-Other possible gates include OR (bitwise OR) and RSHIFT (right-shift). If, for some reason, you'd like to emulate the circuit instead, almost all programming languages (for example, C, JavaScript, or Python) provide operators for these gates.
+
+Other possible gates include OR (bitwise OR) and RSHIFT (right-shift).
+If, for some reason, you'd like to emulate the circuit instead, almost
+all programming languages (for example, C, JavaScript, or Python)
+provide operators for these gates.
 
 For example, here is a simple circuit:
 
@@ -199,6 +311,7 @@ x LSHIFT 2 -> f
 y RSHIFT 2 -> g
 NOT x -> h
 NOT y -> i
+
 After it is run, these are the signals on the wires:
 
 d: 72
@@ -209,35 +322,59 @@ h: 65412
 i: 65079
 x: 123
 y: 456
-In little Bobby's kit's instructions booklet (provided as your puzzle input), what signal is ultimately provided to wire a?
 
---- Part Two ---
+In little Bobby's kit's instructions booklet (provided as your puzzle
+input), what signal is ultimately provided to wire a?""",
+        """ --- Part Two ---
 
-Now, take the signal you got on wire a, override wire b to that signal, and reset the other wires (including wire a). What new signal is ultimately provided to wire a?
-""",
-    """--- Day 8: Matchsticks ---
+Now, take the signal you got on wire a, override wire b to that signal,
+and reset the other wires (including wire a). What new signal is
+ultimately provided to wire a?"""),
+    ("""--- Day 8: Matchsticks ---
 
-Space on the sleigh is limited this year, and so Santa will be bringing his list as a digital copy. He needs to know how much space it will take up when stored.
+Space on the sleigh is limited this year, and so Santa will be bringing
+his list as a digital copy. He needs to know how much space it will take
+up when stored.
 
-It is common in many programming languages to provide a way to escape special characters in strings. For example, C, JavaScript, Perl, Python, and even PHP handle special characters in very similar ways.
+It is common in many programming languages to provide a way to escape
+special characters in strings. For example, C, JavaScript, Perl, Python,
+and even PHP handle special characters in very similar ways.
 
-However, it is important to realize the difference between the number of characters in the code representation of the string literal and the number of characters in the in-memory string itself.
+However, it is important to realize the difference between the number of
+characters in the code representation of the string literal and the
+number of characters in the in-memory string itself.
 
 For example:
 
-"" is 2 characters of code (the two double quotes), but the string contains zero characters.
+"" is 2 characters of code (the two double quotes), but the string
+    contains zero characters.
 "abc" is 5 characters of code, but 3 characters in the string data.
-"aaa\"aaa" is 10 characters of code, but the string itself contains six "a" characters and a single, escaped quote character, for a total of 7 characters in the string data.
-"\\x27" is 6 characters of code, but the string itself contains just one - an apostrophe ('), escaped using hexadecimal notation.
-Santa's list is a file that contains many double-quoted string literals, one on each line. The only escape sequences used are \\ (which represents a single backslash), \" (which represents a lone double-quote character), and \\x plus two hexadecimal characters (which represents a single character with that ASCII code).
+"aaa\"aaa" is 10 characters of code, but the string itself contains
+    six "a" characters and a single, escaped quote character,
+    for a total of 7 characters in the string data.
+"\\x27" is 6 characters of code, but the string itself contains just
+    one - an apostrophe ('), escaped using hexadecimal notation.
 
-Disregarding the whitespace in the file, what is the number of characters of code for string literals minus the number of characters in memory for the values of the strings in total for the entire file?
+Santa's list is a file that contains many double-quoted string literals,
+one on each line. The only escape sequences used are \\ (which
+represents a single backslash), \" (which represents a lone double-quote
+character), and \\x plus two hexadecimal characters (which represents a
+single character with that ASCII code).
 
-For example, given the four strings above, the total number of characters of string code (2 + 5 + 10 + 6 = 23) minus the total number of characters in memory for string values (0 + 3 + 7 + 1 = 11) is 23 - 11 = 12.
+Disregarding the whitespace in the file, what is the number of
+characters of code for string literals minus the number of characters in
+memory for the values of the strings in total for the entire file?
 
---- Part Two ---
+For example, given the four strings above, the total number of
+characters of string code (2 + 5 + 10 + 6 = 23) minus the total number
+of characters in memory for string values
+(0 + 3 + 7 + 1 = 11) is 23 - 11 = 12.""",
+        """ --- Part Two ---
 
-Now, let's go the other way. In addition to finding the number of characters of code, you should now encode each code representation as a new string and find the number of characters of the new encoded representation, including the surrounding double quotes.
+Now, let's go the other way. In addition to finding the number of
+characters of code, you should now encode each code representation as a
+new string and find the number of characters of the new encoded
+representation, including the surrounding double quotes.
 
 For example:
 
@@ -245,19 +382,30 @@ For example:
 "abc" encodes to "\"abc\"", an increase from 5 characters to 9.
 "aaa\"aaa" encodes to "\"aaa\\\"aaa\"", an increase from 10 characters to 16.
 "\x27" encodes to "\"\\x27\"", an increase from 6 characters to 11.
-Your task is to find the total number of characters to represent the newly encoded strings minus the number of characters of code in each original string literal. For example, for the strings above, the total encoded length (6 + 9 + 16 + 11 = 42) minus the characters in the original code representation (23, just like in the first part of this puzzle) is 42 - 23 = 19.
-""",
-    """--- Day 9: All in a Single Night ---
 
-Every year, Santa manages to deliver all of his presents in a single night.
+Your task is to find the total number of characters to represent the
+newly encoded strings minus the number of characters of code in each
+original string literal. For example, for the strings above, the total
+encoded length (6 + 9 + 16 + 11 = 42) minus the characters in the
+original code representation (23, just like in the first part of this
+puzzle) is 42 - 23 = 19."""),
+    ("""--- Day 9: All in a Single Night ---
 
-This year, however, he has some new locations to visit; his elves have provided him the distances between every pair of locations. He can start and end at any two (different) locations he wants, but he must visit each location exactly once. What is the shortest distance he can travel to achieve this?
+Every year, Santa manages to deliver all of his presents in a single
+night.
+
+This year, however, he has some new locations to visit; his elves have
+provided him the distances between every pair of locations. He can start
+and end at any two (different) locations he wants, but he must visit
+each location exactly once. What is the shortest distance he can travel
+to achieve this?
 
 For example, given the following distances:
 
 London to Dublin = 464
 London to Belfast = 518
 Dublin to Belfast = 141
+
 The possible routes are therefore:
 
 Dublin -> London -> Belfast = 982
@@ -266,24 +414,34 @@ London -> Belfast -> Dublin = 659
 Dublin -> Belfast -> London = 659
 Belfast -> Dublin -> London = 605
 Belfast -> London -> Dublin = 982
-The shortest of these is London -> Dublin -> Belfast = 605, and so the answer is 605 in this example.
 
-What is the distance of the shortest route?
+The shortest of these is London -> Dublin -> Belfast = 605, and so the
+answer is 605 in this example.
 
---- Part Two ---
+What is the distance of the shortest route?""",
+        """ --- Part Two ---
 
-The next year, just to show off, Santa decides to take the route with the longest distance instead.
+The next year, just to show off, Santa decides to take the route with
+the longest distance instead.
 
-He can still start and end at any two (different) locations he wants, and he still must visit each location exactly once.
+He can still start and end at any two (different) locations he wants,
+and he still must visit each location exactly once.
 
-For example, given the distances above, the longest route would be 982 via (for example) Dublin -> London -> Belfast.
+For example, given the distances above, the longest route would be 982
+via (for example) Dublin -> London -> Belfast.
 
-What is the distance of the longest route?""",
-    """--- Day 10: Elves Look, Elves Say ---
+What is the distance of the longest route?"""),
+    ("""--- Day 10: Elves Look, Elves Say ---
 
-Today, the Elves are playing a game called look-and-say. They take turns making sequences by reading aloud the previous sequence and using that reading as the next sequence. For example, 211 is read as "one two, two ones", which becomes 1221 (1 2, 2 1s).
+Today, the Elves are playing a game called look-and-say. They take turns
+making sequences by reading aloud the previous sequence and using that
+reading as the next sequence. For example, 211 is read as
+"one two, two ones", which becomes 1221 (1 2, 2 1s).
 
-Look-and-say sequences are generated iteratively, using the previous value as input for the next step. For each step, take the previous value, and replace each run of digits (like 111) with the number of digits (3) followed by the digit itself (1).
+Look-and-say sequences are generated iteratively, using the previous
+value as input for the next step. For each step, take the previous
+value, and replace each run of digits (like 111) with the number of
+digits (3) followed by the digit itself (1).
 
 For example:
 
@@ -292,40 +450,70 @@ For example:
 21 becomes 1211 (one 2 followed by one 1).
 1211 becomes 111221 (one 1, one 2, and two 1s).
 111221 becomes 312211 (three 1s, two 2s, and one 1).
-Starting with the digits in your puzzle input, apply this process 40 times. What is the length of the result?
 
---- Part Two ---
+Starting with the digits in your puzzle input, apply this process 40 times.
+What is the length of the result?""",
+        """ --- Part Two ---
 
-Neat, right? You might also enjoy hearing John Conway talking about this sequence (that's Conway of Conway's Game of Life fame).
+Neat, right? You might also enjoy hearing John Conway talking about this
+sequence (that's Conway of Conway's Game of Life fame).
 
-Now, starting again with the digits in your puzzle input, apply this process 50 times. What is the length of the new result?
-""",
-    """--- Day 11: Corporate Policy ---
+Now, starting again with the digits in your puzzle input, apply this
+process 50 times. What is the length of the new result?"""),
+    ("""--- Day 11: Corporate Policy ---
 
 Santa's previous password expired, and he needs help choosing a new one.
 
-To help him remember his new password after the old one expires, Santa has devised a method of coming up with a password based on the previous one. Corporate policy dictates that passwords must be exactly eight lowercase letters (for security reasons), so he finds his new password by incrementing his old password string repeatedly until it is valid.
+To help him remember his new password after the old one expires, Santa
+has devised a method of coming up with a password based on the previous
+one. Corporate policy dictates that passwords must be exactly eight
+lowercase letters (for security reasons), so he finds his new password
+by incrementing his old password string repeatedly until it is valid.
 
-Incrementing is just like counting with numbers: xx, xy, xz, ya, yb, and so on. Increase the rightmost letter one step; if it was z, it wraps around to a, and repeat with the next letter to the left until one doesn't wrap around.
+Incrementing is just like counting with numbers: xx, xy, xz, ya, yb, and
+so on. Increase the rightmost letter one step; if it was z, it wraps
+around to a, and repeat with the next letter to the left until one
+doesn't wrap around.
 
-Unfortunately for Santa, a new Security-Elf recently started, and he has imposed some additional password requirements:
+Unfortunately for Santa, a new Security-Elf recently started, and he has
+imposed some additional password requirements:
 
-Passwords must include one increasing straight of at least three letters, like abc, bcd, cde, and so on, up to xyz. They cannot skip letters; abd doesn't count.
-Passwords may not contain the letters i, o, or l, as these letters can be mistaken for other characters and are therefore confusing.
-Passwords must contain at least two different, non-overlapping pairs of letters, like aa, bb, or zz.
+Passwords must include one increasing straight of at least three letters,
+    like abc, bcd, cde, and so on, up to xyz.
+    They cannot skip letters; abd doesn't count.
+Passwords may not contain the letters i, o, or l, as these letters can
+    be mistaken for other characters and are therefore confusing.
+Passwords must contain at least two different, non-overlapping pairs of
+    letters, like aa, bb, or zz.
+
 For example:
 
-hijklmmn meets the first requirement (because it contains the straight hij) but fails the second requirement requirement (because it contains i and l).
-abbceffg meets the third requirement (because it repeats bb and ff) but fails the first requirement.
-abbcegjk fails the third requirement, because it only has one double letter (bb).
+hijklmmn meets the first requirement (because it contains the straight hij)
+    but fails the second requirement requirement (because it contains i and l).
+abbceffg meets the third requirement (because it repeats bb and ff) but
+    fails the first requirement.
+abbcegjk fails the third requirement, because it only has one double
+    letter (bb).
+
 The next password after abcdefgh is abcdffaa.
-The next password after ghijklmn is ghjaabcc, because you eventually skip all the passwords that start with ghi..., since i is not allowed.
-Given Santa's current password (your puzzle input), what should his next password be?""",
-    """--- Day 12: JSAbacusFramework.io ---
+The next password after ghijklmn is ghjaabcc, because you eventually
+    skip all the passwords that start with ghi..., since i is not allowed.
 
-Santa's Accounting-Elves need help balancing the books after a recent order. Unfortunately, their accounting software uses a peculiar storage format. That's where you come in.
+Given Santa's current password (your puzzle input),
+what should his next password be?""",
+    """--- Part Two ---
 
-They have a JSON document which contains a variety of things: arrays ([1,2,3]), objects ({"a":1, "b":2}), numbers, and strings. Your first job is to simply find all of the numbers throughout the document and add them together.
+Santa's password expired again. What's the next one?"""),
+    ("""--- Day 12: JSAbacusFramework.io ---
+
+Santa's Accounting-Elves need help balancing the books after a recent
+order. Unfortunately, their accounting software uses a peculiar storage
+format. That's where you come in.
+
+They have a JSON document which contains a variety of things:
+arrays ([1,2,3]), objects ({"a":1, "b":2}), numbers, and strings.
+Your first job is to simply find all of the numbers throughout the
+document and add them together.
 
 For example:
 
@@ -335,25 +523,36 @@ For example:
 [] and {} both have a sum of 0.
 You will not encounter any strings containing numbers.
 
-What is the sum of all numbers in the document?
+What is the sum of all numbers in the document?""",
+        """ --- Part Two ---
 
---- Part Two ---
+Uh oh - the Accounting-Elves have realized that they double-counted
+everything red.
 
-Uh oh - the Accounting-Elves have realized that they double-counted everything red.
-
-Ignore any object (and all of its children) which has any property with the value "red". Do this only for objects ({...}), not arrays ([...]).
+Ignore any object (and all of its children) which has any property with
+the value "red". Do this only for objects ({...}), not arrays ([...]).
 
 [1,2,3] still has a sum of 6.
-[1,{"c":"red","b":2},3] now has a sum of 4, because the middle object is ignored.
-{"d":"red","e":[1,2,3,4],"f":5} now has a sum of 0, because the entire structure is ignored.
-[1,"red",5] has a sum of 6, because "red" in an array has no effect.""",
-    """--- Day 13: Knights of the Dinner Table ---
+[1,{"c":"red","b":2},3] now has a sum of 4, because the middle object
+    is ignored.
+{"d":"red","e":[1,2,3,4],"f":5} now has a sum of 0, because the entire
+    structure is ignored.
+[1,"red",5] has a sum of 6, because "red" in an array has no effect."""),
+    ("""--- Day 13: Knights of the Dinner Table ---
 
-In years past, the holiday feast with your family hasn't gone so well. Not everyone gets along! This year, you resolve, will be different. You're going to find the optimal seating arrangement and avoid all those awkward conversations.
+In years past, the holiday feast with your family hasn't gone so well.
+Not everyone gets along! This year, you resolve, will be different.
+You're going to find the optimal seating arrangement and avoid all those
+awkward conversations.
 
-You start by writing up a list of everyone invited and the amount their happiness would increase or decrease if they were to find themselves sitting next to each other person. You have a circular table that will be just big enough to fit everyone comfortably, and so each person will have exactly two neighbors.
+You start by writing up a list of everyone invited and the amount their
+happiness would increase or decrease if they were to find themselves
+sitting next to each other person. You have a circular table that will
+be just big enough to fit everyone comfortably, and so each person will
+have exactly two neighbors.
 
-For example, suppose you have only four attendees planned, and you calculate their potential happiness as follows:
+For example, suppose you have only four attendees planned, and you
+calculate their potential happiness as follows:
 
 Alice would gain 54 happiness units by sitting next to Bob.
 Alice would lose 79 happiness units by sitting next to Carol.
@@ -367,107 +566,183 @@ Carol would gain 55 happiness units by sitting next to David.
 David would gain 46 happiness units by sitting next to Alice.
 David would lose 7 happiness units by sitting next to Bob.
 David would gain 41 happiness units by sitting next to Carol.
-Then, if you seat Alice next to David, Alice would lose 2 happiness units (because David talks so much), but David would gain 46 happiness units (because Alice is such a good listener), for a total change of 44.
 
-If you continue around the table, you could then seat Bob next to Alice (Bob gains 83, Alice gains 54). Finally, seat Carol, who sits next to Bob (Carol gains 60, Bob loses 7) and David (Carol gains 55, David gains 41). The arrangement looks like this:
+Then, if you seat Alice next to David, Alice would lose 2 happiness
+units (because David talks so much), but David would gain 46 happiness
+units (because Alice is such a good listener), for a total change of 44.
+
+If you continue around the table, you could then seat Bob next to Alice
+(Bob gains 83, Alice gains 54). Finally, seat Carol, who sits next to
+Bob (Carol gains 60, Bob loses 7) and David (Carol gains 55, David gains 41).
+The arrangement looks like this:
 
      +41 +46
 +55   David    -2
 Carol       Alice
 +60    Bob    +54
      -7  +83
-After trying every other seating arrangement in this hypothetical scenario, you find that this one is the most optimal, with a total change in happiness of 330.
 
-What is the total change in happiness for the optimal seating arrangement of the actual guest list?
+After trying every other seating arrangement in this hypothetical
+scenario, you find that this one is the most optimal, with a total
+change in happiness of 330.
 
---- Part Two ---
+What is the total change in happiness for the optimal seating
+arrangement of the actual guest list?""",
+        """ --- Part Two ---
 
-In all the commotion, you realize that you forgot to seat yourself. At this point, you're pretty apathetic toward the whole thing, and your happiness wouldn't really go up or down regardless of who you sit next to. You assume everyone else would be just as ambivalent about sitting next to you, too.
+In all the commotion, you realize that you forgot to seat yourself. At
+this point, you're pretty apathetic toward the whole thing, and your
+happiness wouldn't really go up or down regardless of who you sit next
+to. You assume everyone else would be just as ambivalent about sitting
+next to you, too.
 
-So, add yourself to the list, and give all happiness relationships that involve you a score of 0.
+So, add yourself to the list, and give all happiness relationships that
+involve you a score of 0.
 
-What is the total change in happiness for the optimal seating arrangement that actually includes yourself?""",
-    """--- Day 14: Reindeer Olympics ---
+What is the total change in happiness for the optimal seating
+arrangement that actually includes yourself?"""),
+    ("""--- Day 14: Reindeer Olympics ---
 
-This year is the Reindeer Olympics! Reindeer can fly at high speeds, but must rest occasionally to recover their energy. Santa would like to know which of his reindeer is fastest, and so he has them race.
+This year is the Reindeer Olympics! Reindeer can fly at high speeds, but
+must rest occasionally to recover their energy. Santa would like to know
+which of his reindeer is fastest, and so he has them race.
 
-Reindeer can only either be flying (always at their top speed) or resting (not moving at all), and always spend whole seconds in either state.
+Reindeer can only either be flying (always at their top speed) or
+resting (not moving at all), and always spend whole seconds in either
+state.
 
 For example, suppose you have the following Reindeer:
 
 Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds.
 Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds.
-After one second, Comet has gone 14 km, while Dancer has gone 16 km. After ten seconds, Comet has gone 140 km, while Dancer has gone 160 km. On the eleventh second, Comet begins resting (staying at 140 km), and Dancer continues on for a total distance of 176 km. On the 12th second, both reindeer are resting. They continue to rest until the 138th second, when Comet flies for another ten seconds. On the 174th second, Dancer flies for another 11 seconds.
 
-In this example, after the 1000th second, both reindeer are resting, and Comet is in the lead at 1120 km (poor Dancer has only gotten 1056 km by that point). So, in this situation, Comet would win (if the race ended at 1000 seconds).
+After one second, Comet has gone 14 km, while Dancer has gone 16 km.
+After ten seconds, Comet has gone 140 km, while Dancer has gone 160 km.
+On the eleventh second, Comet begins resting (staying at 140 km), and
+Dancer continues on for a total distance of 176 km. On the 12th second,
+both reindeer are resting. They continue to rest until the 138th second,
+when Comet flies for another ten seconds. On the 174th second, Dancer
+flies for another 11 seconds.
 
-Given the descriptions of each reindeer (in your puzzle input), after exactly 2503 seconds, what distance has the winning reindeer traveled?
+In this example, after the 1000th second, both reindeer are resting, and
+Comet is in the lead at 1120 km (poor Dancer has only gotten 1056 km by
+that point). So, in this situation, Comet would win (if the race ended
+at 1000 seconds).
 
---- Part Two ---
+Given the descriptions of each reindeer (in your puzzle input), after
+exactly 2503 seconds, what distance has the winning reindeer traveled?""",
+        """ --- Part Two ---
 
-Seeing how reindeer move in bursts, Santa decides he's not pleased with the old scoring system.
+Seeing how reindeer move in bursts, Santa decides he's not pleased with
+the old scoring system.
 
-Instead, at the end of each second, he awards one point to the reindeer currently in the lead. (If there are multiple reindeer tied for the lead, they each get one point.) He keeps the traditional 2503 second time limit, of course, as doing otherwise would be entirely ridiculous.
+Instead, at the end of each second, he awards one point to the reindeer
+currently in the lead. (If there are multiple reindeer tied for the
+lead, they each get one point.) He keeps the traditional 2503 second
+time limit, of course, as doing otherwise would be entirely ridiculous.
 
-Given the example reindeer from above, after the first second, Dancer is in the lead and gets one point. He stays in the lead until several seconds into Comet's second burst: after the 140th second, Comet pulls into the lead and gets his first point. Of course, since Dancer had been in the lead for the 139 seconds before that, he has accumulated 139 points by the 140th second.
+Given the example reindeer from above, after the first second, Dancer
+is in the lead and gets one point. He stays in the lead until several
+seconds into Comet's second burst: after the 140th second, Comet pulls
+into the lead and gets his first point. Of course, since Dancer had been
+in the lead for the 139 seconds before that, he has accumulated
+139 points by the 140th second.
 
-After the 1000th second, Dancer has accumulated 689 points, while poor Comet, our old champion, only has 312. So, with the new scoring system, Dancer would win (if the race ended at 1000 seconds).
+After the 1000th second, Dancer has accumulated 689 points, while poor
+Comet, our old champion, only has 312. So, with the new scoring system,
+Dancer would win (if the race ended at 1000 seconds).
 
-Again given the descriptions of each reindeer (in your puzzle input), after exactly 2503 seconds, how many points does the winning reindeer have?
-""",
-    """--- Day 15: Science for Hungry People ---
+Again given the descriptions of each reindeer (in your puzzle input),
+after exactly 2503 seconds, how many points does the winning reindeer
+have?"""),
+    ("""--- Day 15: Science for Hungry People ---
 
-Today, you set out on the task of perfecting your milk-dunking cookie recipe. All you have to do is find the right balance of ingredients.
+Today, you set out on the task of perfecting your milk-dunking cookie
+recipe. All you have to do is find the right balance of ingredients.
 
-Your recipe leaves room for exactly 100 teaspoons of ingredients. You make a list of the remaining ingredients you could use to finish the recipe (your puzzle input) and their properties per teaspoon:
+Your recipe leaves room for exactly 100 teaspoons of ingredients.
+You make a list of the remaining ingredients you could use to finish the
+recipe (your puzzle input) and their properties per teaspoon:
 
 capacity (how well it helps the cookie absorb milk)
 durability (how well it keeps the cookie intact when full of milk)
 flavor (how tasty it makes the cookie)
 texture (how it improves the feel of the cookie)
 calories (how many calories it adds to the cookie)
-You can only measure ingredients in whole-teaspoon amounts accurately, and you have to be accurate so you can reproduce your results in the future. The total score of a cookie can be found by adding up each of the properties (negative totals become 0) and then multiplying together everything except calories.
+
+You can only measure ingredients in whole-teaspoon amounts accurately,
+and you have to be accurate so you can reproduce your results in the
+future. The total score of a cookie can be found by adding up each of
+the properties (negative totals become 0) and then multiplying together
+everything except calories.
 
 For instance, suppose you have these two ingredients:
 
 Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
 Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3
-Then, choosing to use 44 teaspoons of butterscotch and 56 teaspoons of cinnamon (because the amounts of each ingredient must add up to 100) would result in a cookie with the following properties:
+Then, choosing to use 44 teaspoons of butterscotch and 56 teaspoons of
+cinnamon (because the amounts of each ingredient must add up to 100)
+would result in a cookie with the following properties:
 
 A capacity of 44*-1 + 56*2 = 68
 A durability of 44*-2 + 56*3 = 80
 A flavor of 44*6 + 56*-2 = 152
 A texture of 44*3 + 56*-1 = 76
-Multiplying these together (68 * 80 * 152 * 76, ignoring calories for now) results in a total score of 62842880, which happens to be the best score possible given these ingredients. If any properties had produced a negative total, it would have instead become zero, causing the whole score to multiply to zero.
 
-Given the ingredients in your kitchen and their properties, what is the total score of the highest-scoring cookie you can make?
+Multiplying these together (68 * 80 * 152 * 76, ignoring calories for now)
+results in a total score of 62842880, which happens to be the best score
+possible given these ingredients. If any properties had produced a
+negative total, it would have instead become zero, causing the whole
+score to multiply to zero.
 
---- Part Two ---
+Given the ingredients in your kitchen and their properties, what is the
+total score of the highest-scoring cookie you can make?""",
+        """ --- Part Two ---
 
-Your cookie recipe becomes wildly popular! Someone asks if you can make another recipe that has exactly 500 calories per cookie (so they can use it as a meal replacement). Keep the rest of your award-winning process the same (100 teaspoons, same ingredients, same scoring system).
+Your cookie recipe becomes wildly popular! Someone asks if you can make
+another recipe that has exactly 500 calories per cookie (so they can use
+it as a meal replacement). Keep the rest of your award-winning process
+the same (100 teaspoons, same ingredients, same scoring system).
 
-For example, given the ingredients above, if you had instead selected 40 teaspoons of butterscotch and 60 teaspoons of cinnamon (which still adds to 100), the total calorie count would be 40*8 + 60*3 = 500. The total score would go down, though: only 57600000, the best you can do in such trying circumstances.
+For example, given the ingredients above, if you had instead selected
+40 teaspoons of butterscotch and 60 teaspoons of cinnamon (which still
+adds to 100), the total calorie count would be 40*8 + 60*3 = 500. The
+total score would go down, though: only 57600000, the best you can do in
+such trying circumstances.
 
-Given the ingredients in your kitchen and their properties, what is the total score of the highest-scoring cookie you can make with a calorie total of 500?
-""",
-    """--- Day 16: Aunt Sue ---
+Given the ingredients in your kitchen and their properties, what is the
+total score of the highest-scoring cookie you can make with a calorie
+total of 500?"""),
+    ("""--- Day 16: Aunt Sue ---
 
-Your Aunt Sue has given you a wonderful gift, and you'd like to send her a thank you card. However, there's a small problem: she signed it "From, Aunt Sue".
+Your Aunt Sue has given you a wonderful gift, and you'd like to send her
+a thank you card. However, there's a small problem: she signed it
+    "From, Aunt Sue".
 
 You have 500 Aunts named "Sue".
 
-So, to avoid sending the card to the wrong person, you need to figure out which Aunt Sue (which you conveniently number 1 to 500, for sanity) gave you the gift. You open the present and, as luck would have it, good ol' Aunt Sue got you a My First Crime Scene Analysis Machine! Just what you wanted. Or needed, as the case may be.
+So, to avoid sending the card to the wrong person, you need to figure
+out which Aunt Sue (which you conveniently number 1 to 500, for sanity)
+gave you the gift. You open the present and, as luck would have it, good
+ol' Aunt Sue got you a My First Crime Scene Analysis Machine! Just what
+you wanted. Or needed, as the case may be.
 
-The My First Crime Scene Analysis Machine (MFCSAM for short) can detect a few specific compounds in a given sample, as well as how many distinct kinds of those compounds there are. According to the instructions, these are what the MFCSAM can detect:
+The My First Crime Scene Analysis Machine (MFCSAM for short) can detect
+a few specific compounds in a given sample, as well as how many distinct
+kinds of those compounds there are. According to the instructions, these
+are what the MFCSAM can detect:
 
 children, by human DNA age analysis.
 cats. It doesn't differentiate individual breeds.
-Several seemingly random breeds of dog: samoyeds, pomeranians, akitas, and vizslas.
+Several seemingly random breeds of dog: samoyeds, pomeranians, akitas,
+    and vizslas.
 goldfish. No other kinds of fish.
 trees, all in one group.
 cars, presumably by exhaust or gasoline or something.
 perfumes, which is handy, since many of your Aunts Sue wear a few kinds.
-In fact, many of your Aunts Sue have many of these. You put the wrapping from the gift into the MFCSAM. It beeps inquisitively at you a few times and then prints out a message on ticker tape:
+In fact, many of your Aunts Sue have many of these. You put the wrapping
+from the gift into the MFCSAM. It beeps inquisitively at you a few times
+and then prints out a message on ticker tape:
 
 children: 3
 cats: 7
@@ -479,16 +754,23 @@ goldfish: 5
 trees: 3
 cars: 2
 perfumes: 1
-You make a list of the things you can remember about each Aunt Sue. Things missing from your list aren't zero - you simply don't remember the value.
+You make a list of the things you can remember about each Aunt Sue.
+Things missing from your list aren't zero - you simply don't remember
+the value.
 
-What is the number of the Sue that got you the gift?
+What is the number of the Sue that got you the gift?""",
+        """ --- Part Two ---
 
---- Part Two ---
+As you're about to send the thank you note, something in the MFCSAM's
+instructions catches your eye. Apparently, it has an outdated
+retroencabulator, and so the output from the machine isn't exact
+values - some of them indicate ranges.
 
-As you're about to send the thank you note, something in the MFCSAM's instructions catches your eye. Apparently, it has an outdated retroencabulator, and so the output from the machine isn't exact values - some of them indicate ranges.
+In particular, the cats and trees readings indicates that there are
+greater than that many (due to the unpredictable nuclear decay of cat
+dander and tree pollen), while the pomeranians and goldfish readings
+indicate that there are fewer than that many (due to the modial
+interaction of magnetoreluctance).
 
-In particular, the cats and trees readings indicates that there are greater than that many (due to the unpredictable nuclear decay of cat dander and tree pollen), while the pomeranians and goldfish readings indicate that there are fewer than that many (due to the modial interaction of magnetoreluctance).
-
-What is the number of the real Aunt Sue?
-    """,
+What is the number of the real Aunt Sue?"""),
 ]

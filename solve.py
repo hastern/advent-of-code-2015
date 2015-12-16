@@ -4,6 +4,7 @@
 import re
 import sys
 import argparse
+import time
 import collections
 import Crypto.Hash.MD5 as MD5
 import pyparsing as pp
@@ -417,55 +418,57 @@ sue_who = lambda input, ticker={"children": 3,
 sue_who = lambda input, ticker={"children": 3, "cats": 7, "samoyeds": 2, "pomeranians": 3, "akitas": 0, "vizslas": 0, "goldfish": 5, "trees": 3, "cars": 2, "perfumes": 1}, greater=(), lesser=(): ((lambda list_of_sue, ticker_set, compare_sets: (filter(lambda (nr, sue): compare_sets(sue, ticker_set(ticker)), enumerate(list_of_sue, start=1))))([frozenset((fact, int(count)) for fact, count in map(lambda f: map(str.strip, f.split(":", 1)), facts.split(","))) for sue, facts in map(lambda l: map(str.strip, l.split(":", 1)), input.splitlines())], lambda t: frozenset((k, v) for k, v in t.iteritems()), lambda s, t: (lambda sc, st, compare: (all([compare(k, sc[k], st[k]) for k in st if k in sc])))(collections.Counter({k: v for k, v in s}), collections.Counter({k: v for k, v in t}), lambda k, l, r: l > r if k in greater else l < r if k in lesser else l == r) if (len(greater) + len(lesser)) > 0 else s <= t))
 
 solutions = [
-    lambda *i: None,
-    lambda *i: (sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i[0])]),
-                (lambda m, i: m(m, i))((lambda m, r, f=0, s=0: s if f < 0 or len(r) == 0 else m(m, r[1:], f + ({"(": 1, ")": -1}[r[0]]), s + 1)), filter(lambda e: e in "()", i[0]))
-                ),
-    lambda *i: (sum(map(lambda (l, w, h): ((2 * l * w) + (2 * w * h) + (2 * h * l)) + min(l * w, w * h, h * l), map(lambda l: map(int, l.split("x")), i[0].splitlines()))),
-                sum(map(lambda (l, w, h): min(((2 * l) + (2 * w)), ((2 * l) + (2 * h)), ((2 * h) + (2 * w))) + (l * w * h), map(lambda l: map(int, l.split("x")), i[0].splitlines()))),
-                ),
-    lambda *i: (len(collections.Counter(walk(i[0]))),
-                len(collections.Counter(walk(i[0][::2]) + walk(i[0][1::2])))
-                ),
-    lambda *i: (mine(i[0]),
-                mine(i[0], zeros=6)
-                ),
-    lambda *i: (sum([(not any(map(lambda p: p in line, ["ab", "cd", "pq", "xy"]))) and (len(filter(lambda c: c in "aeiou", line)) >= 3) and (any(map(lambda p: p in line, [c * 2 for c in "abcdefghijklmnopqrstuvwxyz"]))) for line in map(str.strip, i[0].splitlines())]),
-                sum([re.match("^.*(.).\\1.*$", line) is not None and re.match("^.*(..).*\\1.*$", line) is not None for line in map(str.strip, i[0].splitlines())]),
-                ),
-    lambda *i: (collections.Counter(access_lights(build_lights(), parse_light_switches(i[0])).itervalues())[True],
-                sum(access_lights(build_lights(), parse_light_switches(i[0]), funcs={"toggle": lambda v: v + 2, "on": lambda v: v + 1, "off": lambda v: v - 1}, after=lambda v: max(v, 0)).itervalues())
-                ),
-    lambda *i: (resolve_logic(wire_gates(init_gates(parse_logic(i[0]))))['a'].value,
-                resolve_logic(wire_gates(update_gate(init_gates(parse_logic(i)), "b", resolve_logic(wire_gates(init_gates(parse_logic(i[0]))))['a'].value)))['a'].value
-                ),
-    lambda *i: (sum(map(len, i[0].splitlines())) - sum(map(len, map(unescape, map(lambda s: s[1:-1], i[0].splitlines())))),
-                sum(map(len, map(escape, i[0].splitlines()))) - sum(map(len, i[0].splitlines()))
-                ),
-    lambda *i: (shortest_route(i[0]),
-                longest_route(i[0]),
-                ),
-    lambda i, t1=40, t2=50: (len(look_and_say_repeat(i, int(t1))),
-                             len(look_and_say_repeat(i, int(t2))),
-                             ),
-    lambda *i: (next_password(i[0]),
-                next_password(next_password(i[0])),
-                ),
-    lambda *i: (sum_up(i[0]),
-                sum_up(i[0], ignore="red"),
-                ),
-    lambda *i: (happy_place(i[0]),
-                happy_place(i[0], add_keys=["self"]),
-                ),
-    lambda i, times=2503: (fastest_reindeer(i, times),
-                           fastest_reindeer(i, times, True),
-                           ),
-    lambda *i: (best_ingredients(i[0]),
-                best_ingredients(i[0], calorie_value=500),
-                ),
-    lambda *i: (sue_who(i[0]),
-                sue_who(i[0], greater=("cats", "trees"), lesser=("pomeranians", "goldfish"))
-                )
+    (lambda *i: None,
+     lambda *i: None
+     ),
+    (lambda *i: sum([{"(": 1, ")": -1}[c] for c in filter(lambda e: e in "()", i[0])]),
+     lambda *i: (lambda m, i: m(m, i))((lambda m, r, f=0, s=0: s if f < 0 or len(r) == 0 else m(m, r[1:], f + ({"(": 1, ")": -1}[r[0]]), s + 1)), filter(lambda e: e in "()", i[0]))
+     ),
+    (lambda *i: sum(map(lambda (l, w, h): ((2 * l * w) + (2 * w * h) + (2 * h * l)) + min(l * w, w * h, h * l), map(lambda l: map(int, l.split("x")), i[0].splitlines()))),
+     lambda *i: sum(map(lambda (l, w, h): min(((2 * l) + (2 * w)), ((2 * l) + (2 * h)), ((2 * h) + (2 * w))) + (l * w * h), map(lambda l: map(int, l.split("x")), i[0].splitlines()))),
+     ),
+    (lambda *i: len(collections.Counter(walk(i[0]))),
+     lambda *i: len(collections.Counter(walk(i[0][::2]) + walk(i[0][1::2])))
+     ),
+    (lambda *i: mine(i[0]),
+     lambda *i: mine(i[0], zeros=6)
+     ),
+    (lambda *i: sum([(not any(map(lambda p: p in line, ["ab", "cd", "pq", "xy"]))) and (len(filter(lambda c: c in "aeiou", line)) >= 3) and (any(map(lambda p: p in line, [c * 2 for c in "abcdefghijklmnopqrstuvwxyz"]))) for line in map(str.strip, i[0].splitlines())]),
+     lambda *i: sum([re.match("^.*(.).\\1.*$", line) is not None and re.match("^.*(..).*\\1.*$", line) is not None for line in map(str.strip, i[0].splitlines())]),
+     ),
+    (lambda *i: collections.Counter(access_lights(build_lights(), parse_light_switches(i[0])).itervalues())[True],
+     lambda *i: sum(access_lights(build_lights(), parse_light_switches(i[0]), funcs={"toggle": lambda v: v + 2, "on": lambda v: v + 1, "off": lambda v: v - 1}, after=lambda v: max(v, 0)).itervalues())
+     ),
+    (lambda *i: resolve_logic(wire_gates(init_gates(parse_logic(i[0]))))['a'].value,
+     lambda *i: resolve_logic(wire_gates(update_gate(init_gates(parse_logic(i)), "b", resolve_logic(wire_gates(init_gates(parse_logic(i[0]))))['a'].value)))['a'].value
+     ),
+    (lambda *i: sum(map(len, i[0].splitlines())) - sum(map(len, map(unescape, map(lambda s: s[1:-1], i[0].splitlines())))),
+     lambda *i: sum(map(len, map(escape, i[0].splitlines()))) - sum(map(len, i[0].splitlines()))
+     ),
+    (lambda *i: shortest_route(i[0]),
+     lambda *i: longest_route(i[0]),
+     ),
+    (lambda i, t1=40, t2=50: len(look_and_say_repeat(i, int(t1))),
+     lambda i, t1=40, t2=50: len(look_and_say_repeat(i, int(t2))),
+     ),
+    (lambda *i: next_password(i[0]),
+     lambda *i: next_password(next_password(i[0])),
+     ),
+    (lambda *i: sum_up(i[0]),
+     lambda *i: sum_up(i[0], ignore="red"),
+     ),
+    (lambda *i: happy_place(i[0]),
+     lambda *i: happy_place(i[0], add_keys=["self"]),
+     ),
+    (lambda i, times=2503: fastest_reindeer(i, times),
+     lambda i, times=2503: fastest_reindeer(i, times, True),
+     ),
+    (lambda *i: best_ingredients(i[0]),
+     lambda *i: best_ingredients(i[0], calorie_value=500),
+     ),
+    (lambda *i: sue_who(i[0]),
+     lambda *i: sue_who(i[0], greater=("cats", "trees"), lesser=("pomeranians", "goldfish"))
+     ),
 ]
 
 if __name__ == "__main__":
@@ -473,6 +476,16 @@ if __name__ == "__main__":
 
     if args.day <= len(solutions):
         input = (inputs[args.day],) if args.input is None else args.input
-        print tasks[args.day]
-        print "Solution:"
-        print solutions[args.day](*input)
+        print tasks[args.day][0]
+        print ""
+        start = time.time()
+        print solutions[args.day][0](*input)
+        print "{:.03f} sec".format(time.time() - start)
+        print ""
+        print tasks[args.day][1]
+        print ""
+        start = time.time()
+        print solutions[args.day][1](*input)
+        print "{:.03f} sec".format(time.time() - start)
+
+
