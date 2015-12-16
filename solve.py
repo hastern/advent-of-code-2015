@@ -22,27 +22,33 @@ parser.add_argument("day", type=int)
 parser.add_argument("--input", type=str, nargs="+")
 
 
-def walk(route, x_step={"^": 0, "v": 0, "<": -1, ">": 1}, y_step={"^": -1, "v": 1, "<": 0, ">": 0}):
-    x, y = 0, 0
-    history = [(x, y)]
-    for step in route:
-        x += x_step[step]
-        y += y_step[step]
-        history += [(x, y)]
-    return history
+walk = lambda route, x_step={"^": 0, "v": 0, "<": -1, ">": 1}, y_step={"^": -1, "v": 1, "<": 0, ">": 0}: (
+    (lambda history=[(0, 0)]: ((
+        history,
+        [
+            history.append(
+                (history[-1][0] + x_step[step], history[-1][1] + y_step[step])
+            ) for step in route
+        ]
+    )[0]))()
+)
 
-
-def mine(key, zeros=5):
-    digest = ""
-    round = 0
-    zeros = "0" * zeros
-    while not digest.startswith(zeros):
-        round += 1
-        secret = key + str(round)
-        digest = MD5.new(secret).hexdigest()
-        if round % 1000 == 0:
-            print digest, "\r",
-    return round, digest
+mine = lambda key, zeros=5, state={"ready": False}: (
+    (lambda z: (
+        state.update(ready=False),
+        reduce(
+            lambda (k, p, d), e: (
+                k, e, ((lambda digest: (
+                    digest,
+                    sys.stdout.write(digest + "\r") if e % 10000 == 0 else None,
+                    state.update(ready=digest.startswith(z)),
+                ))(MD5.new(k + str(e)).hexdigest()))[0],
+            ),
+            (i for i in xrange(10000000) if not state['ready']),
+            (key, 0, None)
+        )
+    )[0])("0" * zeros)
+)
 
 
 def parse_light_switches(instrs):
@@ -176,23 +182,24 @@ def resolve_logic(gates):
         map(Gate.resolve, gate.outputs)
     return gates
 
-
-def unescape(s):
-    chs = []
-    p = 0
-    while p < len(s):
-        if s[p] == "\\":  # escape sequence
-            if s[p + 1] == "x":
-                chs.append(int(s[p + 2:p + 4], 16))
-                p += 3
-            else:
-                chs.append(ord(s[p + 1]))
-                p += 1
-        else:  # Standard character
-            chs.append(ord(s[p]))
-        p += 1
-    return chs
-
+unescape = lambda s, state={"counter": 0}: (
+    (lambda counter, chs: (
+        (chs, state.update(counter=0), [chs.append(
+            (
+                (ord(s[p]), state.update(counter=p + 1))
+                if s[p] != "\\"
+                else (
+                    (int(s[p + 2:p + 4], 16), state.update(counter=p + 4))
+                    if s[p + 1] == "x"
+                    else (ord(s[p + 1]), state.update(counter=p + 2))
+                )
+            )[0]
+        ) for p in counter])[0]
+    ))(
+        (state['counter'] for _ in xrange(len(s)) if state['counter'] < len(s)),
+        list()
+    )
+)
 
 escape = lambda s: '"{}"'.format("".join(["\\{}".format(c) if c in ['"', '\\'] else c for c in s]))
 
@@ -233,14 +240,18 @@ find_route = lambda input, predicate, init: (
 longest_route = lambda input: find_route(input, max, (0, None))
 shortest_route = lambda input: find_route(input, min, (sys.maxint, None))
 
-look_and_say_repeat = lambda v, n: reduce(lambda a, e: "".join(["{}{}".format(len(list(g)), k) for k, g in itertools.groupby(a)]), range(n), v)
+look_and_say_repeat = lambda v, n: reduce(
+    lambda a, e: "".join("{}{}".format(len(list(g)), k) for k, g in itertools.groupby(a)),
+    range(n),
+    v
+)
 
 next_password = lambda previous: (
     (lambda generator, validator, state={"ready": False}:
         # Abusing reduce to create a loop and not run out of stack space
         # I hope that 1 million candidates are enough
         reduce(lambda a, e: (lambda new: (new, state.update(ready=validator(new)))[0])(generator(a)),
-               (lambda: [(yield None) if not state['ready'] else None for _ in xrange(1000000)])(),
+               (None for _ in xrange(1000000) if not state['ready']),
                previous
                )
         # # Y-Combinator for iterating possible candidates
