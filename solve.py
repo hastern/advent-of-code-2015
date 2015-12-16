@@ -41,7 +41,7 @@ def mine(key, zeros=5):
         secret = key + str(round)
         digest = MD5.new(secret).hexdigest()
         if round % 1000 == 0:
-            print digest, secret, "\r",
+            print digest, "\r",
     return round, digest
 
 
@@ -224,7 +224,7 @@ find_route = lambda input, predicate, init: (
         lambda parts: int(parts[4]),
         lambda lines: map(str.split, lines),
         predicate,
-        lambda e, d: sum([d[tuple(sorted(e[c:c + 2]))] for c in range(len(e) - 1)]),
+        lambda e, d: sum(d[tuple(sorted(e[c:c + 2]))] for c in range(len(e) - 1)),
         lambda d: itertools.permutations(set(list(sum(d.keys(), ())))),
         init,
     )
@@ -265,10 +265,10 @@ next_password = lambda previous: (
             # Passwords must include one increasing straight of at least three
             # letters, like abc, bcd, cde, and so on, up to xyz. They cannot skip
             # letters; abd doesn't count.
-            (lambda s, l=3: any([
-                (lambda cs: all([(ord(cs[i]) + 1) == ord(cs[i + 1]) for i in range(len(cs) - 1)]))(s[i:i + l])
+            (lambda s, l=3: any(
+                (lambda cs: all((ord(cs[i]) + 1) == ord(cs[i + 1]) for i in range(len(cs) - 1)))(s[i:i + l])
                 for i in range(len(s) - l + 1)
-            ])),
+            )),
             # Passwords must contain at least two different, non-overlapping pairs
             # of letters, like aa, bb, or zz.
             (lambda s: re.match("^.*(.)\\1.*(.)\\2.*$", s) is not None)
@@ -303,10 +303,10 @@ happy_place = lambda input, add_keys=[]: (
             lambda k: k[0]
         ),
         max,
-        lambda sitting, people: sum([
+        lambda sitting, people: sum(
             people.get(sitting[p], {}).get(sitting[(p - 1) % len(sitting)], 0) + people.get(sitting[p], {}).get(sitting[(p + 1) % len(sitting)], 0)
             for p in range(len(sitting))
-        ]),
+        ),
         lambda people: itertools.permutations(people.keys() + add_keys),
         (0, None),
     )
@@ -326,18 +326,18 @@ fastest_reindeer = lambda input, times=1, points=False: (
                 (min(total_t % (fly_t + rest_t), fly_t))) * speed
         ),
         # Move all reindeers, and select the best (most distance) one
-        lambda rs, m, t: max([
+        lambda rs, m, t: max(
             (m(*r, total_t=t), name)
             for name, r in rs.iteritems()
-        ]),
+        ),
         # Distance scoring: select the furthest reindeer
         lambda r, rs, m: r(rs, m, times),
         # Point scoring: select the reindeer longest time in the lead
         lambda r, rs, m: (
-            collections.Counter([
+            collections.Counter(
                 r(rs, m, t)[1]
                 for t in range(1, times + 1)
-            ]).most_common(1)[0]
+            ).most_common(1)[0]
         )
     )
 )
@@ -366,16 +366,16 @@ best_ingredients = lambda input, spoons=100, calorie_value=0, keys=["capacity", 
         ],
         # Calculate values of all ingredients, returns 0 if the calorie value is not matched
         lambda ingredients, amounts:
-            reduce(lambda a, e: a * e, [
-                max(0, sum([
+            reduce(lambda a, e: a * e, (
+                max(0, sum(
                     ingredients[ingredient][key] * amount
                     for ingredient, amount in amounts.iteritems()
-                ]) if calorie_value == 0 or sum([
+                ) if calorie_value == 0 or sum(
                     ingredients[ingredient]["calories"] * amount
                     for ingredient, amount in amounts.iteritems()
-                ]) == calorie_value else 0)
+                ) == calorie_value else 0)
                 for key in keys
-            ], 1),
+            ), 1),
     )
 )
 
@@ -396,17 +396,17 @@ sue_who = lambda input, ticker={"children": 3,
             enumerate(list_of_sue, start=1)
         )
     ))(
-        [
+        (
             frozenset((fact, int(count)) for fact, count in map(lambda f: map(str.strip, f.split(":", 1)), facts.split(",")))
             for sue, facts in map(lambda l: map(str.strip, l.split(":", 1)), input.splitlines())
-        ],
+        ),
         # Generate a set from the ticker output
         lambda t: frozenset((k, v) for k, v in t.iteritems()),
         # Manual set comparison, since we need fuzzy comparison for part 2
         # The inner lambda is used only if lesser or greater are set.
         #  It act's as a closure for the counters.
         lambda s, t: (lambda sc, st, compare: (
-            all([compare(k, sc[k], st[k]) for k in st if k in sc])
+            all(compare(k, sc[k], st[k]) for k in st if k in sc)
         ))(
             collections.Counter({k: v for k, v in s}),
             collections.Counter({k: v for k, v in t}),
@@ -414,8 +414,6 @@ sue_who = lambda input, ticker={"children": 3,
         ) if (len(greater) + len(lesser)) > 0 else s <= t
     )
 )
-
-sue_who = lambda input, ticker={"children": 3, "cats": 7, "samoyeds": 2, "pomeranians": 3, "akitas": 0, "vizslas": 0, "goldfish": 5, "trees": 3, "cars": 2, "perfumes": 1}, greater=(), lesser=(): ((lambda list_of_sue, ticker_set, compare_sets: (filter(lambda (nr, sue): compare_sets(sue, ticker_set(ticker)), enumerate(list_of_sue, start=1))))([frozenset((fact, int(count)) for fact, count in map(lambda f: map(str.strip, f.split(":", 1)), facts.split(","))) for sue, facts in map(lambda l: map(str.strip, l.split(":", 1)), input.splitlines())], lambda t: frozenset((k, v) for k, v in t.iteritems()), lambda s, t: (lambda sc, st, compare: (all([compare(k, sc[k], st[k]) for k in st if k in sc])))(collections.Counter({k: v for k, v in s}), collections.Counter({k: v for k, v in t}), lambda k, l, r: l > r if k in greater else l < r if k in lesser else l == r) if (len(greater) + len(lesser)) > 0 else s <= t))
 
 solutions = [
     (lambda *i: None,
