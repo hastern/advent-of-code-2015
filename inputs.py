@@ -3546,4 +3546,24 @@ Sue 497: cats: 1, perfumes: 0, cars: 7
 Sue 498: perfumes: 7, vizslas: 6, cats: 9
 Sue 499: vizslas: 8, perfumes: 1, akitas: 3
 Sue 500: perfumes: 4, cars: 9, trees: 4""",
+    """33
+14
+18
+20
+45
+35
+16
+35
+1
+13
+18
+13
+50
+44
+48
+6
+24
+41
+30
+42""",
 ]
