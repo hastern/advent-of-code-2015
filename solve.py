@@ -426,13 +426,25 @@ sue_who = lambda input, ticker={"children": 3,
     )
 )
 
-eggnog_bottles = lambda input, volume=150: (
-    (lambda bottles: sum(
-        sum(b) == volume for b in itertools.chain(*(itertools.combinations(bottles, i) for i in xrange(len(bottles))))
+eggnog_bottles = lambda input, volume=150, min_only=False: (
+    (lambda bottles, filled, find_all, find_min: (
+        {False: find_all, True: find_min}[min_only](bottles, filled)
     ))(
         map(int, input.splitlines()),
+        # Generate all possible lists of containers filling exactly the volume
+        lambda bs: (
+            b for b in itertools.chain(*(
+                itertools.combinations(bs, i) for i in xrange(len(bs))
+            )) if sum(b) == volume),
+        # Part 1: Only count the all matching possibilities
+        lambda bs, fill: len(list(fill(bs))),
+        # Part 2: Count only possibilities with a minimum number of containers
+        lambda bs, fill: (lambda m: (
+            len(filter(lambda c: len(c) == m, fill(bs)))
+        ))(min(map(len, fill(bs))))
     )
 )
+
 
 solutions = [
     (lambda *i: None,
@@ -487,7 +499,7 @@ solutions = [
      lambda *i: sue_who(i[0], greater=("cats", "trees"), lesser=("pomeranians", "goldfish"))
      ),
     (lambda i, volume=150: eggnog_bottles(i, int(volume)),
-     lambda *i: None
+     lambda i, volume=150: eggnog_bottles(i, int(volume), more=True),
      )
 ]
 
