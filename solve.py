@@ -426,6 +426,14 @@ sue_who = lambda input, ticker={"children": 3,
     )
 )
 
+eggnog_bottles = lambda input, volume=150: (
+    (lambda bottles: sum(
+        sum(b) == volume for b in itertools.chain(*(itertools.combinations(bottles, i) for i in xrange(len(bottles))))
+    ))(
+        map(int, input.splitlines()),
+    )
+)
+
 solutions = [
     (lambda *i: None,
      lambda *i: None
@@ -478,13 +486,16 @@ solutions = [
     (lambda *i: sue_who(i[0]),
      lambda *i: sue_who(i[0], greater=("cats", "trees"), lesser=("pomeranians", "goldfish"))
      ),
+    (lambda i, volume=150: eggnog_bottles(i, int(volume)),
+     lambda *i: None
+     )
 ]
 
 if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.day <= len(solutions):
-        input = (inputs[args.day],) if args.input is None else args.input
+        input = (inputs[args.day],) if args.input is None else map(lambda i: i.replace("\\n", "\n"), args.input)
         print tasks[args.day][0]
         print ""
         start = time.time()
@@ -496,5 +507,3 @@ if __name__ == "__main__":
         start = time.time()
         print solutions[args.day][1](*input)
         print "{:.03f} sec".format(time.time() - start)
-
-
