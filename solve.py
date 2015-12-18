@@ -445,6 +445,44 @@ eggnog_bottles = lambda input, volume=150, min_only=False: (
     )
 )
 
+game_of_light = lambda input, rounds=100, rules={
+    "#": lambda neighbors: (
+        "#" if len(filter(lambda e: e == "#", neighbors)) in [2, 3] else "."
+    ),
+    ".": lambda neighbors: (
+        "#" if len(filter(lambda e: e == "#", neighbors)) in [3] else "."
+    ),
+}: (
+    (lambda lights, neighbors, step, count, render: (
+        count(reduce(
+            lambda a, e: (step(a, neighbors), sys.stdout.write(str(count(a)) + "     \r"))[0],
+            (i for i in xrange(rounds)),
+            lights
+        ))
+    ))(
+        {
+            (x, y): c
+            for y, line in enumerate(input.splitlines())
+            for x, c in enumerate(line)
+        },
+        lambda field, (x, y): filter(
+            lambda e: e is not None,
+            (field.get(neighbor, None)
+             for neighbor in ((x - 1, y - 1), (x, y - 1), (x + 1, y - 1),
+                              (x - 1, y + 0),             (x + 1, y + 0),
+                              (x - 1, y + 1), (x, y + 1), (x + 1, y + 1)))
+        ),
+        lambda field, neighbors: {
+            coord: rules[value](neighbors(field, coord))
+            for coord, value in field.iteritems()
+        },
+        lambda field, value="#": len(filter(lambda v: v == value, field.itervalues())),
+        lambda field: (lambda width, height: [
+            sys.stdout.write("{}\n".format("".join(field[(x, y)] for x in xrange(width + 1))))
+            for y in xrange(height + 1)
+        ])(*max(field.keys())),
+    )
+)
 
 solutions = [
     (lambda *i: None,
@@ -500,6 +538,9 @@ solutions = [
      ),
     (lambda i, volume=150: eggnog_bottles(i, int(volume)),
      lambda i, volume=150: eggnog_bottles(i, int(volume), more=True),
+     ),
+    (lambda *i: game_of_light(i[0]),
+     lambda *i: None,
      )
 ]
 
