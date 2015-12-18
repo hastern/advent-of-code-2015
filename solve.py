@@ -451,13 +451,13 @@ game_of_light = lambda input, rounds=100, rules={
     ),
     ".": lambda neighbors: (
         "#" if len(filter(lambda e: e == "#", neighbors)) in [3] else "."
-    ),
-}: (
+    )
+}, stuck = {}: (
     (lambda lights, neighbors, step, count, render: (
         count(reduce(
             lambda a, e: (step(a, neighbors), sys.stdout.write(str(count(a)) + "     \r"))[0],
             (i for i in xrange(rounds)),
-            lights
+            {c: stuck[c] if c in stuck else v for c, v in lights.iteritems()}
         ))
     ))(
         {
@@ -473,7 +473,7 @@ game_of_light = lambda input, rounds=100, rules={
                               (x - 1, y + 1), (x, y + 1), (x + 1, y + 1)))
         ),
         lambda field, neighbors: {
-            coord: rules[value](neighbors(field, coord))
+            coord: rules[value](neighbors(field, coord)) if coord not in stuck else stuck[coord]
             for coord, value in field.iteritems()
         },
         lambda field, value="#": len(filter(lambda v: v == value, field.itervalues())),
@@ -540,7 +540,7 @@ solutions = [
      lambda i, volume=150: eggnog_bottles(i, int(volume), more=True),
      ),
     (lambda *i: game_of_light(i[0]),
-     lambda *i: None,
+     lambda *i: game_of_light(i[0], stuck={(0, 0): "#", (99, 0): "#", (0, 99): "#", (99, 99): "#"}),
      )
 ]
 
