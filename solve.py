@@ -445,6 +445,7 @@ eggnog_bottles = lambda input, volume=150, min_only=False: (
     )
 )
 
+# Implementing the game of life in a single line
 game_of_light = lambda input, rounds=100, rules={
     "#": lambda neighbors: (
         "#" if len(filter(lambda e: e == "#", neighbors)) in [2, 3] else "."
@@ -455,16 +456,17 @@ game_of_light = lambda input, rounds=100, rules={
 }, stuck = {}: (
     (lambda lights, neighbors, step, count, render: (
         count(reduce(
-            lambda a, e: (step(a, neighbors), sys.stdout.write(str(count(a)) + "     \r"))[0],
+            lambda a, e: step(a, neighbors),
             (i for i in xrange(rounds)),
             {c: stuck[c] if c in stuck else v for c, v in lights.iteritems()}
         ))
     ))(
-        {
+        {  # Read the field
             (x, y): c
             for y, line in enumerate(input.splitlines())
             for x, c in enumerate(line)
         },
+        # List of all neighbors of a single cell
         lambda field, (x, y): filter(
             lambda e: e is not None,
             (field.get(neighbor, None)
@@ -472,14 +474,20 @@ game_of_light = lambda input, rounds=100, rules={
                               (x - 1, y + 0),             (x + 1, y + 0),
                               (x - 1, y + 1), (x, y + 1), (x + 1, y + 1)))
         ),
+        # Advance the field one step
         lambda field, neighbors: {
             coord: rules[value](neighbors(field, coord)) if coord not in stuck else stuck[coord]
             for coord, value in field.iteritems()
         },
+        # Count specific cells in the field
         lambda field, value="#": len(filter(lambda v: v == value, field.itervalues())),
-        lambda field: (lambda width, height: [
-            sys.stdout.write("{}\n".format("".join(field[(x, y)] for x in xrange(width + 1))))
-            for y in xrange(height + 1)
+        # Render function writes the field to a stream
+        lambda field, stream: (lambda width, height: [
+            stream.write(
+                "{}\n".format(
+                    "".join(field[(x, y)] for x in xrange(width + 1))
+                )
+            ) for y in xrange(height + 1)
         ])(*max(field.keys())),
     )
 )
