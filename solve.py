@@ -492,6 +492,41 @@ game_of_light = lambda input, rounds=100, rules={
     )
 )
 
+alchemy = lambda input: (
+    (lambda (replacements, molecule): (
+        len(reduce(
+            lambda s, (p, a): (
+                s,
+                s.update(set(
+                    "".join(molecule[:p] + [rep] + molecule[p + 1:])
+                    for rep in replacements.get(a, [])
+                ))
+            )[0],
+            ((pos, atom) for pos, atom in enumerate(molecule)),
+            set()
+        ))
+    ))(
+        (lambda repl, mol: (
+            {
+                k: list(map(lambda e: e[1], g))
+                for k, g in
+                itertools.groupby(
+                    map(lambda l: l.split(" => "), repl.splitlines()),
+                    lambda e: e[0]
+                )
+            },
+            map("".join, reduce(
+                lambda a, i: (
+                    a,
+                    a.append([mol[i]]) if mol[i].isupper() else a[-1].append(mol[i])
+                )[0],
+                (i for i in xrange(len(mol))),
+                []
+            ))
+        ))(*input.split("\n\n", 1)),
+    )
+)
+
 solutions = [
     (lambda *i: None,
      lambda *i: None
@@ -549,7 +584,10 @@ solutions = [
      ),
     (lambda *i: game_of_light(i[0]),
      lambda *i: game_of_light(i[0], stuck={(0, 0): "#", (99, 0): "#", (0, 99): "#", (99, 99): "#"}),
-     )
+     ),
+    (lambda *i: alchemy(i[0]),
+     lambda *i: None
+     ),
 ]
 
 if __name__ == "__main__":
