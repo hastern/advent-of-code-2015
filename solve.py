@@ -492,29 +492,12 @@ game_of_light = lambda input, rounds=100, rules={
     )
 )
 
-alchemy = lambda input: (
-    (lambda (replacements, molecule): (
-        len(reduce(
-            lambda s, (p, a): (
-                s,
-                s.update(set(
-                    "".join(molecule[:p] + [rep] + molecule[p + 1:])
-                    for rep in replacements.get(a, [])
-                ))
-            )[0],
-            ((pos, atom) for pos, atom in enumerate(molecule)),
-            set()
-        ))
+alchemy = lambda input, calibrate=True: (
+    (lambda (replacements, molecule), calibration, lookup: (
+        {True: calibration, False: lookup}[calibrate](replacements, molecule)
     ))(
         (lambda repl, mol: (
-            {
-                k: list(map(lambda e: e[1], g))
-                for k, g in
-                itertools.groupby(
-                    map(lambda l: l.split(" => "), repl.splitlines()),
-                    lambda e: e[0]
-                )
-            },
+            map(lambda l: l.split(" => "), repl.splitlines()),
             map("".join, reduce(
                 lambda a, i: (
                     a,
@@ -524,6 +507,54 @@ alchemy = lambda input: (
                 []
             ))
         ))(*input.split("\n\n", 1)),
+        lambda repls, mol: (
+            (lambda repl_group: (
+                len(reduce(
+                    lambda s, (p, a): (
+                        s,
+                        s.update(set(
+                            "".join(mol[:p] + [rep] + mol[p + 1:])
+                            for rep in repl_group.get(a, [])
+                        ))
+                    )[0],
+                    ((pos, atom) for pos, atom in enumerate(mol)),
+                    set()
+                ))
+            ))({
+                k: list(map(lambda e: e[1], g))
+                for k, g in
+                itertools.groupby(repls, lambda e: e[0])
+            })
+        ),
+        lambda repls, mol: (
+            (lambda inv_repl, state={"done": False}: (
+                reduce(
+                    lambda best, keys: ((lambda candidate: min([candidate, best], key=lambda e: e[1]) if candidate[0] == "e" else best)((
+                        sys.stdout.write(str(best[1]) + "           \r"),
+                        state.update(atoms=keys),
+                        reduce(
+                            lambda m, i: (
+                                (
+                                    (
+                                        (m[0].replace(state['atoms'][0], inv_repl[state['atoms'][0]], 1), m[1] + 1),
+                                        state.update(atoms=keys),
+                                    )[0] if state['atoms'][0] in m[0] else (
+                                        m,
+                                        state.update(atoms=state['atoms'][1:]),
+                                    )[0],
+                                )[0]
+                            ),
+                            (i for i in xrange(100000) if len(state['atoms']) > 0),
+                            ("".join(mol), 0)
+                        )
+                    )[-1])),
+                    (list(reversed(p)) for p in itertools.permutations(inv_repl.keys())),
+                    (None, sys.maxint)
+                )
+            ))(
+                {v: k for k, v in repls}
+            )
+        )
     )
 )
 
@@ -586,7 +617,7 @@ solutions = [
      lambda *i: game_of_light(i[0], stuck={(0, 0): "#", (99, 0): "#", (0, 99): "#", (99, 99): "#"}),
      ),
     (lambda *i: alchemy(i[0]),
-     lambda *i: None
+     lambda *i: alchemy(i[0], calibrate=False)
      ),
 ]
 
