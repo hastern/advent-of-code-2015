@@ -529,8 +529,17 @@ alchemy = lambda input, calibrate=True: (
         lambda repls, mol: (
             (lambda inv_repl, state={"done": False}: (
                 reduce(
-                    lambda best, keys: ((lambda candidate: min([candidate, best], key=lambda e: e[1]) if candidate[0] == "e" else best)((
-                        sys.stdout.write(str(best[1]) + "           \r"),
+                    lambda best, keys: ((
+                        lambda candidate: (
+                            state.update(done=candidate[0] == "e"),
+                            min(
+                                [candidate, best],
+                                key=lambda e: e[1]
+                            ) if candidate[0] == "e" else best
+                        )[-1]
+                    )((
+                        sys.stdout.write("{:80}\r".format("")),
+                        sys.stdout.write("{:80}\r".format(best[1])),
                         state.update(atoms=keys),
                         reduce(
                             lambda m, i: (
@@ -544,11 +553,16 @@ alchemy = lambda input, calibrate=True: (
                                     )[0],
                                 )[0]
                             ),
-                            (i for i in xrange(100000) if len(state['atoms']) > 0),
+                            (i for i in xrange(10000) if len(state['atoms']) > 0),
                             ("".join(mol), 0)
                         )
                     )[-1])),
-                    (list(reversed(p)) for p in itertools.permutations(inv_repl.keys())),
+                    (lambda gen: [
+                        (yield list(reversed(next(gen))))
+                        if not state['done'] else None
+                        for _ in xrange(100000)
+                    ])(itertools.permutations(inv_repl.keys())),
+                    # (list(reversed(p)) for p in itertools.permutations(inv_repl.keys()) if not state['done']),
                     (None, sys.maxint)
                 )
             ))(
