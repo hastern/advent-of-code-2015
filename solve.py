@@ -572,6 +572,75 @@ alchemy = lambda input, calibrate=True: (
     )
 )
 
+sieve_of_elves = lambda input, count=10: (
+    (lambda presents, houses, house_value, prime_factors, primes, divisors, state={}: (
+        state.update(done=False),
+        reduce(
+            lambda _, house: (lambda value: (
+                state.update(done=value > presents),
+                sys.stdout.write("{:09}: {:<20}\r".format(house, value)),
+                (house, value)
+            )[-1])(houses(house)),
+            (house for house in xrange(presents / count / 5, presents / count) if not state['done']),
+            None,
+        )
+    )[-1])(
+        int(input),
+        # Calculate the number of presents delievered to a house
+        lambda houses: sum(elf for elf in xrange(1, houses) if houses % elf == 0) * count,
+        # Calculate the value of a house by generating adding divisors
+        lambda house, div, prime_factors, primes: sum(div(prime_factors(house, primes()))),
+        # prime factorization using a sieve of Erathosthenes as generator
+        lambda number, prime_gen: (
+            (lambda factors, state=dict(prime=2, num=number): (
+                reduce(
+                    lambda num, prime: (
+                        (factors.append(prime), num / prime)
+                        if num % prime == 0
+                        else (state.update(prime=next(prime_gen), num=num), num)
+                    )[-1],
+                    (state['prime'] for _ in xrange(number / count) if state["num"] > 1),
+                    number,
+                ),
+                factors
+            )[-1])(list())
+        ),
+        # Sieve of Erathosthenes for prime number generation
+        lambda init=2: (
+            (lambda numbers, sieve, state={"current": None}: (
+                (
+                    state.update(current=sieve(numbers(init), init)),
+                    (yield init),
+                    [(yield (
+                        (lambda prime: (
+                            (
+                                state.update(current=sieve(state['current'], prime)),
+                                prime
+                            )[-1]
+                        ))(next(state['current']))
+                    )) for _ in xrange(1, 100000)]
+                )[-1]
+            ))(
+                lambda num: (i for i in xrange(num, 100000)),
+                lambda parent, num: [(yield candidate) if candidate % num != 0 else None for candidate in parent],
+            )
+        ),
+        # Get all divisors for given number, based on its prime factors
+        lambda primes: (
+            sorted(map(
+                lambda facs: reduce(
+                    lambda prod, fac: fac * prod,
+                    facs,
+                    1
+                ),
+                set(itertools.chain(*([
+                    itertools.combinations(primes, i) for i in xrange(len(primes))
+                ])))
+            ))
+        )
+    )
+)
+
 solutions = [
     (lambda *i: None,
      lambda *i: None
@@ -632,6 +701,9 @@ solutions = [
      ),
     (lambda *i: alchemy(i[0]),
      lambda *i: alchemy(i[0], calibrate=False)
+     ),
+    (lambda i, count=10: sieve_of_elves(int(i), int(count)),
+     lambda *i: None
      ),
 ]
 
