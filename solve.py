@@ -573,24 +573,36 @@ alchemy = lambda input, calibrate=True: (
     )
 )
 
-sieve_of_elves = lambda input, count=10: (
+sieve_of_elves = lambda input, count=10, max_houses=sys.maxint, skip=100: (
     (lambda presents, houses, house_value, prime_factors, primes, divisors, state={}: (
-        state.update(done=False),
-        reduce(
-            lambda _, house: (lambda value: (
-                state.update(done=value > presents),
-                sys.stdout.write("{:09}: {:<20}\r".format(house, value)),
-                (house, value)
-            )[-1])(houses(house)),
-            (house for house in xrange(presents / count / 5, presents / count) if not state['done']),
-            None,
+        (lambda left, right: (
+            state.update(done=False),
+            reduce(
+                lambda _, house: (lambda value: (
+                    state.update(done=value * count >= presents),
+                    # I like watching the script work, even if it means a
+                    # slowdown
+                    sys.stdout.write("{:09}: {:<20}\r".format(house, value)),
+                    (house, value * count)
+                )[-1])(house_value(house, divisors, prime_factors, primes)),
+                (house for house in xrange(left, right)
+                    if not state['done'] and house % skip == 0),
+                None,
+            )
+        ))(  # Get the search range
+            presents / count / count * 2, presents / count
         )
     )[-1])(
         int(input),
         # Calculate the number of presents delievered to a house
         lambda houses: sum(elf for elf in xrange(1, houses) if houses % elf == 0) * count,
         # Calculate the value of a house by generating adding divisors
-        lambda house, div, prime_factors, primes: sum(div(prime_factors(house, primes()))),
+        lambda house, div, prime_factors, primes, accumulate=sum: accumulate(
+            itertools.ifilter(
+                lambda d: house / d <= max_houses,
+                div(collections.Counter(prime_factors(house, primes())).items())
+            )
+        ),
         # prime factorization using a sieve of Erathosthenes as generator
         lambda number, prime_gen: (
             (lambda factors, state=dict(prime=2, num=number): (
@@ -600,7 +612,7 @@ sieve_of_elves = lambda input, count=10: (
                         if num % prime == 0
                         else (state.update(prime=next(prime_gen), num=num), num)
                     )[-1],
-                    (state['prime'] for _ in xrange(number / count) if state["num"] > 1),
+                    (state['prime'] for _ in xrange(number) if state["num"] > 1),
                     number,
                 ),
                 factors
@@ -608,10 +620,14 @@ sieve_of_elves = lambda input, count=10: (
         ),
         # Sieve of Erathosthenes for prime number generation
         lambda init=2: (
+            # Close to crate a namespace for the number generator
+            # and the sieves
             (lambda numbers, sieve, state={"current": None}: (
                 (
                     state.update(current=sieve(numbers(init), init)),
                     (yield init),
+                    # Main "loop": Each iteration will create a new sieve
+                    # at the end if the chain.
                     [(yield (
                         (lambda prime: (
                             (
@@ -619,24 +635,26 @@ sieve_of_elves = lambda input, count=10: (
                                 prime
                             )[-1]
                         ))(next(state['current']))
-                    )) for _ in xrange(1, 100000)]
+                    )) for _ in xrange(1, 10000)]
                 )[-1]
             ))(
-                lambda num: (i for i in xrange(num, 100000)),
+                # Number generator: Generates all an "infinite" number generator
+                # Acts as initial "sieve"
+                lambda num: (i for i in xrange(num, 1000000)),
+                # A single sieve: Query parent sieve for the next candidate
+                # Checks weither the candidate is divisible by its own prime
                 lambda parent, num: [(yield candidate) if candidate % num != 0 else None for candidate in parent],
             )
         ),
         # Get all divisors for given number, based on its prime factors
         lambda primes: (
-            sorted(map(
+            sorted(itertools.imap(
                 lambda facs: reduce(
                     lambda prod, fac: fac * prod,
                     facs,
                     1
                 ),
-                set(itertools.chain(*([
-                    itertools.combinations(primes, i) for i in xrange(len(primes))
-                ])))
+                itertools.product(*([n**i for i in range(0, e + 1)] for n, e in primes))
             ))
         )
     )
@@ -703,9 +721,11 @@ solutions = [
     (lambda *i: alchemy(i[0]),
      lambda *i: alchemy(i[0], calibrate=False)
      ),
-    (lambda i, count=10: sieve_of_elves(int(i), int(count)),
-     lambda *i: None
+    (lambda i, count=10, max_house=sys.maxint, skip=100: sieve_of_elves(int(i), int(count), int(max_house), int(skip)),  # 831600
+     lambda i, count=11, max_house=50, skip=10: sieve_of_elves(int(i), int(count), int(max_house), int(skip)),  #
      ),
+    (lambda *i: boss_fight(i[0]),
+     )
 ]
 
 if __name__ == "__main__":
