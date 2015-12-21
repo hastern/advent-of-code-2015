@@ -687,15 +687,15 @@ boss_fight = lambda input, hitpoints=100, shop={
         "Defense +2": {"Cost":  40, "Damage": 0, "Armor": 2},
         "Defense +3": {"Cost":  80, "Damage": 0, "Armor": 3},
     }
-}: (
+}, crook=False: (
     (lambda boss, hero, inventory, fight, round: (
         reduce(
             lambda best, items: (lambda (result, h): (
-                min([(h['Cost'], h['Items'], h['Hitpoints']), best], key=lambda e: e[0])
-                if result else best
+                {True: max, False: min}[crook]([(h['Cost'], h['Items'], h['Hitpoints']), best], key=lambda e: e[0])
+                if result is not crook else best
             ))(fight(boss, hero(*items), round)),
             inventory(),
-            (sys.maxint, [], 0)
+            (sys.maxint if not crook else 0, [], 0)
         )
     ))(
         {
@@ -819,6 +819,7 @@ solutions = [
      lambda i, count=11, max_house=50, skip=10: sieve_of_elves(int(i), int(count), int(max_house), int(skip)),  #
      ),
     (lambda *i: boss_fight(i[0]),
+     lambda *i: boss_fight(i[0], crook=True),
      )
 ]
 
