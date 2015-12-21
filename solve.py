@@ -660,6 +660,100 @@ sieve_of_elves = lambda input, count=10, max_houses=sys.maxint, skip=100: (
     )
 )
 
+
+boss_fight = lambda input, hitpoints=100, shop={
+    "Weapons": {
+        "Dagger":     {"Cost":  8,  "Damage": 4, "Armor": 0},
+        "Shortsword": {"Cost": 10,  "Damage": 5, "Armor": 0},
+        "Warhammer":  {"Cost": 25,  "Damage": 6, "Armor": 0},
+        "Longsword":  {"Cost": 40,  "Damage": 7, "Armor": 0},
+        "Greataxe":   {"Cost": 74,  "Damage": 8, "Armor": 0},
+    },
+    "Armor": {
+        "Plain":      {"Cost":   0, "Damage": 0, "Armor": 0},
+        "Leather":    {"Cost":  13, "Damage": 0, "Armor": 1},
+        "Chainmail":  {"Cost":  31, "Damage": 0, "Armor": 2},
+        "Splintmail": {"Cost":  53, "Damage": 0, "Armor": 3},
+        "Bandedmail": {"Cost":  75, "Damage": 0, "Armor": 4},
+        "Platemail":  {"Cost": 102, "Damage": 0, "Armor": 5},
+    },
+    "Rings": {
+        "Copper":     {"Cost":   0, "Damage": 0, "Armor": 0},
+        "Steel":      {"Cost":   0, "Damage": 0, "Armor": 0},
+        "Damage +1":  {"Cost":  25, "Damage": 1, "Armor": 0},
+        "Damage +2":  {"Cost":  50, "Damage": 2, "Armor": 0},
+        "Damage +3":  {"Cost": 100, "Damage": 3, "Armor": 0},
+        "Defense +1": {"Cost":  20, "Damage": 0, "Armor": 1},
+        "Defense +2": {"Cost":  40, "Damage": 0, "Armor": 2},
+        "Defense +3": {"Cost":  80, "Damage": 0, "Armor": 3},
+    }
+}: (
+    (lambda boss, hero, inventory, fight, round: (
+        reduce(
+            lambda best, items: (lambda (result, h): (
+                min([(h['Cost'], h['Items'], h['Hitpoints']), best], key=lambda e: e[0])
+                if result else best
+            ))(fight(boss, hero(*items), round)),
+            inventory(),
+            (sys.maxint, [], 0)
+        )
+    ))(
+        {
+            key.replace(" ", "").title(): int(val) for key, val in
+            map(lambda l: l.split(": "), input.splitlines())
+        },
+        # Build Player based on items
+        lambda *items: dict(
+            Items=[name for name, item in items],
+            Hitpoints=hitpoints,
+            Damage=sum(item['Damage'] for name, item in items),
+            Armor=sum(item['Armor'] for name, item in items),
+            Cost=sum(item['Cost'] for name, item in items)
+        ),
+        # Shopping Time: Pick 1 Weapon, 1 Armor and 2 Rings
+        lambda: (items for items in itertools.product(
+            shop['Weapons'].items(),
+            shop['Armor'].items(),
+            shop['Rings'].items(),
+            shop['Rings'].items()
+        ) if items[2][0] != items[3][0]),
+        # The fight!
+        lambda boss, hero, round: (
+            (lambda f: f(f, round, boss, hero))(
+                lambda f, r, b, h: (
+                    (
+                        # sys.stdout.write("Hero deals {}-{}={} damage; The boss goes down to {} hit points\n".format(
+                        #     h['Damage'], b['Armor'],
+                        #     h['Damage'] - b['Armor'],
+                        #     b['Hitpoints'] - (h['Damage'] - b['Armor']))
+                        # ),
+                        # sys.stdout.write("Boss deals {}-{}={} damage; The hero goes down to {} hit points\n".format(
+                        #     b['Damage'], h['Armor'],
+                        #     b['Damage'] - h['Armor'],
+                        #     h['Hitpoints'] - (b['Damage'] - h['Armor']))
+                        # ),
+                        f(f, r, *r(b, h)),
+                    ) if b['Hitpoints'] > 0 and h['Hitpoints'] > 0
+                    else ((h['Hitpoints'] > 0, h),)
+                )[-1]
+            )
+        ),
+        # A single round of the battle
+        lambda boss, hero: (
+            dict(Hitpoints=boss['Hitpoints'] - (hero['Damage'] - boss['Armor']),
+                 Armor=boss['Armor'],
+                 Damage=boss['Damage'],
+                 ),
+            dict(Hitpoints=hero['Hitpoints'] - (boss['Damage'] - hero['Armor']),
+                 Armor=hero['Armor'],
+                 Damage=hero['Damage'],
+                 Cost=hero['Cost'],
+                 Items=hero['Items'],
+                 ),
+        ),
+    )
+)
+
 solutions = [
     (lambda *i: None,
      lambda *i: None
