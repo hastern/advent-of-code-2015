@@ -20,6 +20,7 @@ sys.setrecursionlimit(10000)
 parser = argparse.ArgumentParser("Advent of Code Solutions")
 parser.add_argument("day", type=int)
 parser.add_argument("--input", type=str, nargs="+")
+parser.add_argument("--parts", type=int, nargs="+", default=[1, 2])
 
 
 walk = lambda route, x_step={"^": 0, "v": 0, "<": -1, ">": 1}, y_step={"^": -1, "v": 1, "<": 0, ">": 0}: (
@@ -712,14 +713,10 @@ if __name__ == "__main__":
 
     if args.day <= len(solutions):
         input = (inputs[args.day],) if args.input is None else map(lambda i: i.replace("\\n", "\n"), args.input)
-        print tasks[args.day][0]
-        print ""
-        start = time.time()
-        print solutions[args.day][0](*input)
-        print "{:.03f} sec".format(time.time() - start)
-        print ""
-        print tasks[args.day][1]
-        print ""
-        start = time.time()
-        print solutions[args.day][1](*input)
-        print "{:.03f} sec".format(time.time() - start)
+        for i, part in zip(range(len(solutions[args.day])), args.parts):
+            print tasks[args.day][part - 1]
+            print ""
+            start = time.time()
+            print solutions[args.day][part - 1](*input)
+            print "{:.03f} sec".format(time.time() - start)
+            print ""
