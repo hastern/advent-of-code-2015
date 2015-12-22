@@ -787,7 +787,7 @@ wizard_duel = lambda input, hitpoints=50, mana=500, spells={
                         ) if result else best,
                     )[-1])(fight(boss, hero, spell_list, round, cast, attack, apply_effects)),
                 )[-1],
-                (list(reversed(spell_list)) for spell_list in itertools.ifilter(
+                (spell_list for spell_list in itertools.ifilter(
                     lambda spls: all(
                         (spells[spls[i]]['Duration'] == 0 or
                          spls[i] not in spls[i + 1: i + 1 + (spells[spls[i]]['Duration'] / 2)])
@@ -835,7 +835,7 @@ wizard_duel = lambda input, hitpoints=50, mana=500, spells={
                      Mana=h['Mana'],
                      Spells=[spell for spell in h['Spells']],
                      ),
-            ),
+            ) if b['Hitpoints'] > 0 else (b, h),
         )[-1],
         # Magic effects are applied to both combatants
         lambda b, h: (
@@ -882,7 +882,7 @@ wizard_duel = lambda input, hitpoints=50, mana=500, spells={
                         #      ("Hero" if b["Hitpoints"] < 0 else
                         #       "None"))
                         # )),
-                        (b['Hitpoints'] < 0 and h['Mana'] >= 0 and h['Hitpoints'] > 0, b, h),
+                        (b['Hitpoints'] <= 0 and h['Mana'] >= 0 and h['Hitpoints'] > 0, b, h),
                     )[-1]
                 )
             )
