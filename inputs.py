@@ -3715,4 +3715,6 @@ CRnCaSiRnBSiRnFArTiBPTiTiBFArPBCaSiThSiRnTiBPBPMgArCaSiRnTiMgArCaSiThCaSiRnFArRn
     """Hit Points: 109
 Damage: 8
 Armor: 2""",
+    """Hit Points: 51
+Damage: 9""",
 ]
