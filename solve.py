@@ -762,44 +762,46 @@ wizard_duel = lambda input, hitpoints=50, mana=500, spells={
     "Recharge":      {"Mana": 229, "Duration": 5, "Damage": 0, "Armor": 0, "Heal": 0, "Gain": 101},
 }, drain=0: (
     (lambda boss, hero, cast, attack, apply_effects, round, fight, state={}: (
-        sys.stdout.write("Minimum Spells: {}, Maximum Spells: {}\n".format(
-            boss['Hitpoints'] / sum(s['Damage'] for s in spells.itervalues()),
-            hitpoints / (boss['Damage'] - sum(s['Armor'] for s in spells.itervalues()))
-        )),
-        state.update(min_spells=hitpoints / (boss['Damage'] - sum(s['Armor'] for s in spells.itervalues()))),
+        # sys.stdout.write("Minimum Spells: {}, Maximum Spells: {}\n".format(
+        #     boss['Hitpoints'] / sum(s['Damage'] for s in spells.itervalues()),
+        #     hitpoints / (boss['Damage'] - sum(s['Armor'] for s in spells.itervalues()) + drain)
+        # )),
+        state.update(min_spells=hitpoints / (boss['Damage'] - sum(s['Armor'] for s in spells.itervalues())) + drain),
         reduce(
-            lambda best, spell_list: (
-                sys.stdout.write(
-                    "I prepared {:2} spells this morning: {}. Minimum Mana: {} for {} Spells.".format(
-                        len(spell_list),
-                        "".join(s[0] for s in spell_list),
-                        best[0],
-                        state['min_spells'],
-                    )
-                ),
-                (lambda (result, b, h): (
-                    state.update(min_spells=state['min_spells'] if not result else min(state['min_spells'], len(spell_list))),
-                    (
-                        min([(sum(spells[s]['Mana'] for s in spell_list), spell_list, b, h),
-                             best
-                             ], key=lambda e: e[0])
-                    ) if result else best,
-                )[-1])(fight(boss, hero, spell_list, round, cast, attack, apply_effects)),
-            )[-1],
-            (spell_list for spell_list in itertools.chain(
-                *(itertools.ifilter(
+            lambda _, spell_count: reduce(
+                lambda best, spell_list: (
+                    # sys.stdout.write(
+                    #     "I prepared {:2} spells this morning: {}. Minimum Mana: {} for {} Spells.".format(
+                    #         len(spell_list),
+                    #         "".join(s[0] for s in spell_list),
+                    #         best[0],
+                    #         state['min_spells'],
+                    #     )
+                    # ),
+                    (lambda (result, b, h): (
+                        state.update(min_spells=state['min_spells'] if not result else min(state['min_spells'], len(spell_list))),
+                        (
+                            min([(sum(spells[s]['Mana'] for s in spell_list), spell_list, b, h),
+                                 best
+                                 ], key=lambda e: e[0])
+                        ) if result else best,
+                    )[-1])(fight(boss, hero, spell_list, round, cast, attack, apply_effects)),
+                )[-1],
+                (list(reversed(spell_list)) for spell_list in itertools.ifilter(
                     lambda spls: all(
                         (spells[spls[i]]['Duration'] == 0 or
                          spls[i] not in spls[i + 1: i + 1 + (spells[spls[i]]['Duration'] / 2)])
                         for i in xrange(len(spls))
                     ),
                     itertools.product(spells, repeat=spell_count)
-                ) for spell_count in xrange(
-                    boss['Hitpoints'] / sum(s['Damage'] for s in spells.itervalues()),
-                    hitpoints / (boss['Damage'] - sum(s['Armor'] for s in spells.itervalues()))
-                ) if spell_count <= state['min_spells'])
-            )),
-            (sys.maxint, [])
+                )),
+                (sys.maxint, [], {}, {})
+            ),
+            (spell_count for spell_count in xrange(
+                boss['Hitpoints'] / sum(s['Damage'] for s in spells.itervalues()),
+                hitpoints / (boss['Damage'] - sum(s['Armor'] for s in spells.itervalues()) + drain)
+            ) if spell_count <= state['min_spells']),
+            None,
         )
     )[-1])(
         {
@@ -816,7 +818,7 @@ wizard_duel = lambda input, hitpoints=50, mana=500, spells={
                 dict(Hitpoints=b['Hitpoints'],
                      Damage=b['Damage'],
                      ),
-                dict(Hitpoints=h['Hitpoints'],
+                dict(Hitpoints=h['Hitpoints'] - drain,
                      Mana=h['Mana'] - spells[s]['Mana'],
                      Spells=[spell for spell in h['Spells']] + ([(s, spells[s]["Duration"])] if spells[s]['Mana'] <= h['Mana'] else []),
                      ),
@@ -874,13 +876,13 @@ wizard_duel = lambda input, hitpoints=50, mana=500, spells={
                         h['Hitpoints'] > 0 and
                         b['Hitpoints'] > 0
                         ) else (
-                        sys.stdout.write(" Winner: {:40}\r".format(
-                            "Boss - The hero is out of mana" if h['Mana'] <= 0 else
-                            ("Hero" if b["Hitpoints"] < 0 else
-                             ("Boss" if h['Hitpoints'] < 0 else
-                              "None"))
-                        )),
-                        (b['Hitpoints'] < 0 and h['Mana'] >= 0, b, h),
+                        # sys.stdout.write(" Winner: {:40}\r".format(
+                        #     "Boss - The hero is out of mana" if h['Mana'] <= 0 else
+                        #     ("Boss" if h['Hitpoints'] < 0 else
+                        #      ("Hero" if b["Hitpoints"] < 0 else
+                        #       "None"))
+                        # )),
+                        (b['Hitpoints'] < 0 and h['Mana'] >= 0 and h['Hitpoints'] > 0, b, h),
                     )[-1]
                 )
             )
@@ -957,6 +959,7 @@ solutions = [
      lambda *i: boss_fight(i[0], crook=True),
      ),
     (lambda *i: wizard_duel(i[0]),
+     lambda *i: wizard_duel(i[0], drain=1),
      ),
 ]
 
