@@ -303,25 +303,25 @@ provide operators for these gates.
 
 For example, here is a simple circuit:
 
-123 -> x
-456 -> y
-x AND y -> d
-x OR y -> e
-x LSHIFT 2 -> f
-y RSHIFT 2 -> g
-NOT x -> h
-NOT y -> i
+    123 -> x
+    456 -> y
+    x AND y -> d
+    x OR y -> e
+    x LSHIFT 2 -> f
+    y RSHIFT 2 -> g
+    NOT x -> h
+    NOT y -> i
 
 After it is run, these are the signals on the wires:
 
-d: 72
-e: 507
-f: 492
-g: 114
-h: 65412
-i: 65079
-x: 123
-y: 456
+    d: 72
+    e: 507
+    f: 492
+    g: 114
+    h: 65412
+    i: 65079
+    x: 123
+    y: 456
 
 In little Bobby's kit's instructions booklet (provided as your puzzle
 input), what signal is ultimately provided to wire a?""",
@@ -402,18 +402,18 @@ to achieve this?
 
 For example, given the following distances:
 
-London to Dublin = 464
-London to Belfast = 518
-Dublin to Belfast = 141
+    London to Dublin = 464
+    London to Belfast = 518
+    Dublin to Belfast = 141
 
 The possible routes are therefore:
 
-Dublin -> London -> Belfast = 982
-London -> Dublin -> Belfast = 605
-London -> Belfast -> Dublin = 659
-Dublin -> Belfast -> London = 659
-Belfast -> Dublin -> London = 605
-Belfast -> London -> Dublin = 982
+    Dublin -> London -> Belfast = 982
+    London -> Dublin -> Belfast = 605
+    London -> Belfast -> Dublin = 659
+    Dublin -> Belfast -> London = 659
+    Belfast -> Dublin -> London = 605
+    Belfast -> London -> Dublin = 982
 
 The shortest of these is London -> Dublin -> Belfast = 605, and so the
 answer is 605 in this example.
@@ -501,7 +501,7 @@ The next password after ghijklmn is ghjaabcc, because you eventually
 
 Given Santa's current password (your puzzle input),
 what should his next password be?""",
-    """--- Part Two ---
+        """--- Part Two ---
 
 Santa's password expired again. What's the next one?"""),
     ("""--- Day 12: JSAbacusFramework.io ---
@@ -517,10 +517,11 @@ document and add them together.
 
 For example:
 
-[1,2,3] and {"a":2,"b":4} both have a sum of 6.
-[[[3]]] and {"a":{"b":4},"c":-1} both have a sum of 3.
-{"a":[-1,1]} and [-1,{"a":1}] both have a sum of 0.
-[] and {} both have a sum of 0.
+    [1,2,3] and {"a":2,"b":4} both have a sum of 6.
+    [[[3]]] and {"a":{"b":4},"c":-1} both have a sum of 3.
+    {"a":[-1,1]} and [-1,{"a":1}] both have a sum of 0.
+    [] and {} both have a sum of 0.
+
 You will not encounter any strings containing numbers.
 
 What is the sum of all numbers in the document?""",
@@ -576,11 +577,11 @@ If you continue around the table, you could then seat Bob next to Alice
 Bob (Carol gains 60, Bob loses 7) and David (Carol gains 55, David gains 41).
 The arrangement looks like this:
 
-     +41 +46
-+55   David    -2
-Carol       Alice
-+60    Bob    +54
-     -7  +83
+         +41 +46
+    +55   David    -2
+    Carol       Alice
+    +60    Bob    +54
+         -7  +83
 
 After trying every other seating arrangement in this hypothetical
 scenario, you find that this one is the most optimal, with a total
@@ -744,16 +745,17 @@ In fact, many of your Aunts Sue have many of these. You put the wrapping
 from the gift into the MFCSAM. It beeps inquisitively at you a few times
 and then prints out a message on ticker tape:
 
-children: 3
-cats: 7
-samoyeds: 2
-pomeranians: 3
-akitas: 0
-vizslas: 0
-goldfish: 5
-trees: 3
-cars: 2
-perfumes: 1
+    children: 3
+    cats: 7
+    samoyeds: 2
+    pomeranians: 3
+    akitas: 0
+    vizslas: 0
+    goldfish: 5
+    trees: 3
+    cars: 2
+    perfumes: 1
+
 You make a list of the things you can remember about each Aunt Sue.
 Things missing from your list aren't zero - you simply don't remember
 the value.
@@ -783,10 +785,10 @@ containers.
 For example, suppose you have containers of size 20, 15, 10, 5, and 5
 liters. If you need to store 25 liters, there are four ways to do it:
 
-15 and 10
-20 and 5 (the first 5)
-20 and 5 (the second 5)
-15, 5, and 5
+    15 and 10
+    20 and 5 (the first 5)
+    20 and 5 (the second 5)
+    15, 5, and 5
 
 Filling all containers entirely, how many different combinations of
 containers can exactly fit all 150 liters of eggnog?""",
@@ -828,12 +830,12 @@ For example, in a simplified 6x6 grid, the light marked A has the
 neighbors numbered 1 through 8, and the light marked B, which is on an
 edge, only has the neighbors marked 1 through 5:
 
-1B5...
-234...
-......
-..123.
-..8A4.
-..765.
+    1B5...
+    234...
+    ......
+    ..123.
+    ..8A4.
+    ..765.
 
 The state a light should have next is based on its current state
 (on or off) plus the number of neighbors that are on:
@@ -848,45 +850,22 @@ current state before moving to the next.
 
 Here's a few steps from an example configuration of another 6x6 grid:
 
-Initial state:
-.#.#.#
-...##.
-#....#
-..#...
-#.#..#
-####..
+    Initial state:   After 1 step:   After 2 steps:
+    .#.#.#           ..##..          ..###.
+    ...##.           ..##.#          ......
+    #....#           ...##.          ..###.
+    ..#...           ......          ......
+    #.#..#           #.....          .#....
+    ####..           #.##..          .#....
 
-After 1 step:
-..##..
-..##.#
-...##.
-......
-#.....
-#.##..
+    After 3 steps:   After 4 steps:
+    ...#..           ......
+    ......           ......
+    ...#..           ..##..
+    ..##..           ..##..
+    ......           ......
+    ......           ......
 
-After 2 steps:
-..###.
-......
-..###.
-......
-.#....
-.#....
-
-After 3 steps:
-...#..
-......
-...#..
-..##..
-......
-......
-
-After 4 steps:
-......
-......
-..##..
-..##..
-......
-......
 After 4 steps, this example has four lights on.
 
 In your grid of 100x100 lights, given your initial configuration, how
@@ -899,53 +878,22 @@ until you notice that something's wrong with the grid of lights you
 bought: four lights, one in each corner, are stuck on and can't be
 turned off. The example above will actually run like this:
 
-Initial state:
-##.#.#
-...##.
-#....#
-..#...
-#.#..#
-####.#
+    Initial state:   After 1 step:   After 2 steps:
+    ##.#.#           #.##.#          #..#.#
+    ...##.           ####.#          #....#
+    #....#           ...##.          .#.##.
+    ..#...           ......          ...##.
+    #.#..#           #...#.          .#..##
+    ####.#           #.####          ##.###
 
-After 1 step:
-#.##.#
-####.#
-...##.
-......
-#...#.
-#.####
+    After 3 steps:   After 4 steps:   After 5 steps:
+    #...##           #.####           ##.###
+    ####.#           #....#           .##..#
+    ..##.#           ...#..           .##...
+    ......           .##...           .##...
+    ##....           #.....           #.#...
+    ####.#           #.#..#           ##...#
 
-After 2 steps:
-#..#.#
-#....#
-.#.##.
-...##.
-.#..##
-##.###
-
-After 3 steps:
-#...##
-####.#
-..##.#
-......
-##....
-####.#
-
-After 4 steps:
-#.####
-#....#
-...#..
-.##...
-#.....
-#.#..#
-
-After 5 steps:
-##.###
-.##..#
-.##...
-.##...
-#.#...
-##...#
 After 5 steps, this example now has 17 lights on.
 
 In your grid of 100x100 lights, given your initial configuration, but
@@ -1197,95 +1145,95 @@ be started on the same turn they end.
 For example, suppose the player has 10 hit points and 250 mana, and that
 the boss has 13 hit points and 8 damage:
 
--- Player turn --
-- Player has 10 hit points, 0 armor, 250 mana
-- Boss has 13 hit points
-Player casts Poison.
+    -- Player turn --
+    - Player has 10 hit points, 0 armor, 250 mana
+    - Boss has 13 hit points
+    Player casts Poison.
 
--- Boss turn --
-- Player has 10 hit points, 0 armor, 77 mana
-- Boss has 13 hit points
-Poison deals 3 damage; its timer is now 5.
-Boss attacks for 8 damage.
+    -- Boss turn --
+    - Player has 10 hit points, 0 armor, 77 mana
+    - Boss has 13 hit points
+    Poison deals 3 damage; its timer is now 5.
+    Boss attacks for 8 damage.
 
--- Player turn --
-- Player has 2 hit points, 0 armor, 77 mana
-- Boss has 10 hit points
-Poison deals 3 damage; its timer is now 4.
-Player casts Magic Missile, dealing 4 damage.
+    -- Player turn --
+    - Player has 2 hit points, 0 armor, 77 mana
+    - Boss has 10 hit points
+    Poison deals 3 damage; its timer is now 4.
+    Player casts Magic Missile, dealing 4 damage.
 
--- Boss turn --
-- Player has 2 hit points, 0 armor, 24 mana
-- Boss has 3 hit points
-Poison deals 3 damage. This kills the boss, and the player wins.
+    -- Boss turn --
+    - Player has 2 hit points, 0 armor, 24 mana
+    - Boss has 3 hit points
+    Poison deals 3 damage. This kills the boss, and the player wins.
 
 Now, suppose the same initial conditions, except that the boss has
 14 hit points instead:
 
--- Player turn --
-- Player has 10 hit points, 0 armor, 250 mana
-- Boss has 14 hit points
-Player casts Recharge.
+    -- Player turn --
+    - Player has 10 hit points, 0 armor, 250 mana
+    - Boss has 14 hit points
+    Player casts Recharge.
 
--- Boss turn --
-- Player has 10 hit points, 0 armor, 21 mana
-- Boss has 14 hit points
-Recharge provides 101 mana; its timer is now 4.
-Boss attacks for 8 damage!
+    -- Boss turn --
+    - Player has 10 hit points, 0 armor, 21 mana
+    - Boss has 14 hit points
+    Recharge provides 101 mana; its timer is now 4.
+    Boss attacks for 8 damage!
 
--- Player turn --
-- Player has 2 hit points, 0 armor, 122 mana
-- Boss has 14 hit points
-Recharge provides 101 mana; its timer is now 3.
-Player casts Shield, increasing armor by 7.
+    -- Player turn --
+    - Player has 2 hit points, 0 armor, 122 mana
+    - Boss has 14 hit points
+    Recharge provides 101 mana; its timer is now 3.
+    Player casts Shield, increasing armor by 7.
 
--- Boss turn --
-- Player has 2 hit points, 7 armor, 110 mana
-- Boss has 14 hit points
-Shield's timer is now 5.
-Recharge provides 101 mana; its timer is now 2.
-Boss attacks for 8 - 7 = 1 damage!
+    -- Boss turn --
+    - Player has 2 hit points, 7 armor, 110 mana
+    - Boss has 14 hit points
+    Shield's timer is now 5.
+    Recharge provides 101 mana; its timer is now 2.
+    Boss attacks for 8 - 7 = 1 damage!
 
--- Player turn --
-- Player has 1 hit point, 7 armor, 211 mana
-- Boss has 14 hit points
-Shield's timer is now 4.
-Recharge provides 101 mana; its timer is now 1.
-Player casts Drain, dealing 2 damage, and healing 2 hit points.
+    -- Player turn --
+    - Player has 1 hit point, 7 armor, 211 mana
+    - Boss has 14 hit points
+    Shield's timer is now 4.
+    Recharge provides 101 mana; its timer is now 1.
+    Player casts Drain, dealing 2 damage, and healing 2 hit points.
 
--- Boss turn --
-- Player has 3 hit points, 7 armor, 239 mana
-- Boss has 12 hit points
-Shield's timer is now 3.
-Recharge provides 101 mana; its timer is now 0.
-Recharge wears off.
-Boss attacks for 8 - 7 = 1 damage!
+    -- Boss turn --
+    - Player has 3 hit points, 7 armor, 239 mana
+    - Boss has 12 hit points
+    Shield's timer is now 3.
+    Recharge provides 101 mana; its timer is now 0.
+    Recharge wears off.
+    Boss attacks for 8 - 7 = 1 damage!
 
--- Player turn --
-- Player has 2 hit points, 7 armor, 340 mana
-- Boss has 12 hit points
-Shield's timer is now 2.
-Player casts Poison.
+    -- Player turn --
+    - Player has 2 hit points, 7 armor, 340 mana
+    - Boss has 12 hit points
+    Shield's timer is now 2.
+    Player casts Poison.
 
--- Boss turn --
-- Player has 2 hit points, 7 armor, 167 mana
-- Boss has 12 hit points
-Shield's timer is now 1.
-Poison deals 3 damage; its timer is now 5.
-Boss attacks for 8 - 7 = 1 damage!
+    -- Boss turn --
+    - Player has 2 hit points, 7 armor, 167 mana
+    - Boss has 12 hit points
+    Shield's timer is now 1.
+    Poison deals 3 damage; its timer is now 5.
+    Boss attacks for 8 - 7 = 1 damage!
 
--- Player turn --
-- Player has 1 hit point, 7 armor, 167 mana
-- Boss has 9 hit points
-Shield's timer is now 0.
-Shield wears off, decreasing armor by 7.
-Poison deals 3 damage; its timer is now 4.
-Player casts Magic Missile, dealing 4 damage.
+    -- Player turn --
+    - Player has 1 hit point, 7 armor, 167 mana
+    - Boss has 9 hit points
+    Shield's timer is now 0.
+    Shield wears off, decreasing armor by 7.
+    Poison deals 3 damage; its timer is now 4.
+    Player casts Magic Missile, dealing 4 damage.
 
--- Boss turn --
-- Player has 1 hit point, 0 armor, 114 mana
-- Boss has 2 hit points
-Poison deals 3 damage. This kills the boss, and the player wins.
+    -- Boss turn --
+    - Player has 1 hit point, 0 armor, 114 mana
+    - Boss has 2 hit points
+    Poison deals 3 damage. This kills the boss, and the player wins.
 
 You start with 50 hit points and 500 mana points. The boss's actual
 stats are in your puzzle input. What is the least amount of mana you can
