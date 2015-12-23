@@ -890,8 +890,8 @@ wizard_duel = lambda input, hitpoints=50, mana=500, spells={
     )
 )
 
-turing_lock = lambda input: (
-    (lambda program, instructions, registers={'a': 0, 'b': 0, 'c': 0}: (
+turing_lock = lambda input, a=0, b=0, c=0: (
+    (lambda program, instructions, registers={'a': a, 'b': b, 'c': c}: (
         reduce(
             lambda regs, instr: (
                 # sys.stdout.write("A {r[a]} B {r[b]} C {r[c]} -> ".format(r=registers)),
@@ -1015,6 +1015,7 @@ solutions = [
      lambda *i: wizard_duel(i[0], drain=1),
      ),
     (lambda *i: turing_lock(i[0]),
+     lambda *i: turing_lock(i[0], a=1),
      )
 ]
 
