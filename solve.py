@@ -890,6 +890,59 @@ wizard_duel = lambda input, hitpoints=50, mana=500, spells={
     )
 )
 
+turing_lock = lambda input: (
+    (lambda program, instructions, registers={'a': 0, 'b': 0, 'c': 0}: (
+        reduce(
+            lambda regs, instr: (
+                # sys.stdout.write("A {r[a]} B {r[b]} C {r[c]} -> ".format(r=registers)),
+                # sys.stdout.write("{:4}{:5} => ".format(instr[0], " ".join(instr[1]))),
+                registers.update(instructions[instr[0]](registers, *instr[1])),
+                # sys.stdout.write("A {r[a]} B {r[b]} C {r[c]}\n".format(r=registers)),
+                registers,
+            )[-1],
+            (program[registers['c']] for _ in xrange(10000) if 0 <= registers['c'] < len(program)),
+            registers,
+        )
+    ))(
+        [
+            (op, params.split(", "))
+            for op, params in map(lambda line: line.split(" ", 1), input.splitlines())
+        ],
+        {
+            "hlf": lambda regs, r: dict(
+                a=regs['a'] / (2 if r == 'a' else 1),
+                b=regs['b'] / (2 if r == 'b' else 1),
+                c=regs['c'] + 1,
+            ),
+            "tpl": lambda regs, r: dict(
+                a=regs['a'] * (3 if r == 'a' else 1),
+                b=regs['b'] * (3 if r == 'b' else 1),
+                c=regs['c'] + 1,
+            ),
+            "inc": lambda regs, r: dict(
+                a=regs['a'] + (1 if r == 'a' else 0),
+                b=regs['b'] + (1 if r == 'b' else 0),
+                c=regs['c'] + 1,
+            ),
+            "jmp": lambda regs, o: dict(
+                a=regs['a'],
+                b=regs['b'],
+                c=regs['c'] + int(o),
+            ),
+            "jie": lambda regs, r, o: dict(
+                a=regs['a'],
+                b=regs['b'],
+                c=regs['c'] + (int(o) if int(regs[r]) % 2 == 0 else 1),
+            ),
+            "jio": lambda regs, r, o: dict(
+                a=regs['a'],
+                b=regs['b'],
+                c=regs['c'] + (int(o) if int(regs[r]) == 1 else 1),
+            ),
+        }
+    )
+)
+
 
 solutions = [
     (lambda *i: None,
@@ -961,6 +1014,8 @@ solutions = [
     (lambda *i: wizard_duel(i[0]),
      lambda *i: wizard_duel(i[0], drain=1),
      ),
+    (lambda *i: turing_lock(i[0]),
+     )
 ]
 
 if __name__ == "__main__":
