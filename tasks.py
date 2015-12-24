@@ -1275,7 +1275,7 @@ jio r, offset is like jmp,
 
 All three jump instructions work with an offset relative to that
 instruction. The offset is always written with a prefix + or - to
-indicate the direction of the jump (forward or backward, respectively).
+indicate the direction of the jump (forward or backwa rd, respectively).
 For example, jmp +1 would simply continue with the next instruction,
 while jmp +0 would continuously jump back to itself forever.
 
@@ -1292,5 +1292,9 @@ causes it to skip the tpl instruction:
 
 What is the value in register b when the program in your puzzle input is
 finished executing?""",
-        """"""),
+        """--- Part Two ---
+
+The unknown benefactor is very thankful for releasi-- er, helping little Jane Marie with her computer. Definitely not to distract you, what is the value in register b after the program is finished executing if register a starts as 1 instead?
+
+Your puzzle answer was 247."""),
 ]
