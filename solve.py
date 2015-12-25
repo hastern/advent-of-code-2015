@@ -943,6 +943,28 @@ turing_lock = lambda input, a=0, b=0, c=0: (
     )
 )
 
+quantum_sleigh = lambda input, group_count=3: (
+    (lambda weights: (
+        (lambda total, state=dict(best=sys.maxint): (
+            reduce(
+                lambda _, i: (
+                    (lambda qe: (
+                        (
+                            state.update(best=i),
+                            min(qe, key=lambda e: e[0]),
+                        ) if len(qe) > 0 else None
+                    ))([
+                        (reduce(operator.mul, c, 1), c)
+                        for c in itertools.combinations(weights, i)
+                        if sum(c) == total
+                    ])
+                ),
+                (i for i in xrange(len(weights)) if state['best'] > i),
+                None
+            )
+        ))(sum(weights) / group_count)
+    ))(map(int, input.splitlines()))
+)
 
 solutions = [
     (lambda *i: None,
@@ -1016,7 +1038,9 @@ solutions = [
      ),
     (lambda *i: turing_lock(i[0]),
      lambda *i: turing_lock(i[0], a=1),
-     )
+     ),
+    (lambda *i: quantum_sleigh(i[0]),
+     ),
 ]
 
 if __name__ == "__main__":
