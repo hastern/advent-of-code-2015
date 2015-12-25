@@ -1040,6 +1040,7 @@ solutions = [
      lambda *i: turing_lock(i[0], a=1),
      ),
     (lambda *i: quantum_sleigh(i[0]),
+     lambda *i: quantum_sleigh(i[0], 4),
      ),
 ]
 
