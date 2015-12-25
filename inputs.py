@@ -3791,4 +3791,5 @@ jmp -7""",
 107
 109
 113""",
+    "To continue, please consult the code grid in the manual.  Enter the code at row 2981, column 3075.",
 ]
