@@ -966,6 +966,27 @@ quantum_sleigh = lambda input, group_count=3: (
     ))(map(int, input.splitlines()))
 )
 
+instruction_generator = lambda input, initial=20151125: (
+    (lambda (row, col), generator, coordinate_convert: (
+        generator(coordinate_convert(row, col) - 1)
+    ))(
+        map(lambda v: int(v[:-1]), input.split()[15::2]),
+        lambda i: reduce(
+            lambda b, v: (b * 252533) % 33554393,
+            (_ for _ in xrange(i)),
+            initial
+        ),
+        lambda row, col, state={"done": False}: reduce(
+            lambda (_, (r, c), m), i: (
+                state.update(done=(r == row and c == col)),
+                (i, (r - 1, c + 1), m) if r > 1 else (i, (m, 1), m + 1),
+            )[-1],
+            (i for i in xrange(1, (row + col) * col) if not state['done']),
+            (1, (1, 1), 2)
+        )[0]
+    )
+)
+
 solutions = [
     (lambda *i: None,
      lambda *i: None
@@ -1041,6 +1062,8 @@ solutions = [
      ),
     (lambda *i: quantum_sleigh(i[0]),
      lambda *i: quantum_sleigh(i[0], 4),
+     ),
+    (lambda *i: instruction_generator(i[0]),
      ),
 ]
 
